@@ -1,0 +1,118 @@
+/* ==========================================================================
+   MOTION ACCORDION (FAQ Component)
+   Matching the Emerald Wealth & Sage Green Editorial Design
+   ========================================================================== */
+
+.motion-accordion-wrapper {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.motion-accordion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.motion-accordion-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  transition: all var(--transition-normal);
+}
+
+.motion-accordion-item:hover {
+  border-color: var(--accent-mint);
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.motion-accordion-item.is-open {
+  border-color: var(--accent-mint);
+  box-shadow: var(--dock-shadow);
+  background: var(--bg-card);
+}
+
+.accordion-trigger {
+  display: flex;
+  width: 100%;
+  cursor: pointer;
+  user-select: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 30px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: inherit;
+}
+
+.accordion-question {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.35;
+  flex: 1;
+}
+
+.accordion-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, color 0.2s ease;
+}
+
+.motion-accordion-item.is-open .accordion-icon-wrap {
+  background: var(--accent-emerald);
+  color: #ffffff;
+  transform: rotate(180deg);
+}
+
+[data-theme='dark'] .motion-accordion-item.is-open .accordion-icon-wrap {
+  background: var(--accent-mint);
+  color: #071712;
+}
+
+.accordion-collapse {
+  overflow: hidden;
+  transition: max-height 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease-out;
+}
+
+.accordion-content {
+  padding: 0 30px 28px 30px;
+}
+
+.accordion-answer {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 640px) {
+  .accordion-trigger {
+    padding: 18px 20px;
+  }
+  .accordion-question {
+    font-size: 1.1rem;
+  }
+  .accordion-content {
+    padding: 0 20px 22px 20px;
+  }
+  .accordion-icon-wrap {
+    width: 38px;
+    height: 38px;
+  }
+}
+

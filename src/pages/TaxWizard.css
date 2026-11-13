@@ -1,6 +1,9 @@
-/* ── Tax Wizard Page ── */
+/* ==========================================================================
+   WARM EDITORIAL TAX WIZARD (Wealthfront / Bespoke Wealth Style)
+   ========================================================================== */
+
 .tw-page {
-  max-width: 1000px;
+  max-width: 1040px;
   margin: 0 auto;
 }
 
@@ -8,39 +11,46 @@
 .tw-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 24px;
+  gap: 26px;
+  margin-bottom: 30px;
 }
 
 .tw-section {
-  padding: 28px 24px;
+  padding: 36px 30px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
 }
 
 .tw-section h3 {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 20px;
-  color: var(--accent-amber);
+  gap: 10px;
+  margin-bottom: 24px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .tw-form-fields {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
 .tw-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 16px;
 }
 
 .tw-max-badge {
   margin-left: 8px;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .tw-calc-btn {
@@ -48,135 +58,198 @@
 }
 
 .text-gradient-icon {
-  color: var(--accent-amber);
+  color: var(--accent-gold);
 }
 
 /* ── Loading ── */
 .tw-loading {
   text-align: center;
-  padding: 80px 20px;
+  padding: 80px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
 }
 
-/* ── Results ── */
+/* ── Recommendation Banner ── */
 .tw-recommendation {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 20px 24px;
-  margin-bottom: 24px;
+  gap: 20px;
+  padding: 26px 32px;
+  margin-bottom: 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
 }
 
 .tw-rec-new {
-  border-left: 4px solid var(--accent-blue);
-  color: var(--accent-blue);
+  border-left: 5px solid var(--accent-gold);
+}
+
+.tw-rec-new h3 {
+  color: var(--accent-gold);
 }
 
 .tw-rec-old {
-  border-left: 4px solid var(--accent-amber);
-  color: var(--accent-amber);
+  border-left: 5px solid var(--accent-emerald);
+}
+
+.tw-rec-old h3 {
+  color: var(--accent-emerald);
 }
 
 .tw-recommendation h3 {
-  font-size: 1.1rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
   margin-bottom: 4px;
 }
 
 .tw-recommendation p {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
-/* ── Comparison ── */
+/* ── Comparison Cards ── */
 .tw-comparison {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  gap: 16px;
+  gap: 22px;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .tw-regime-card {
-  padding: 28px 24px;
+  padding: 36px 30px;
   text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-fast);
+}
+
+.tw-regime-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-gold);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .tw-old-label {
-  color: var(--accent-amber);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent-bronze);
   margin-bottom: 12px;
 }
 
+[data-theme='dark'] .tw-old-label {
+  color: var(--accent-gold);
+}
+
 .tw-new-label {
-  color: var(--accent-blue);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent-emerald);
   margin-bottom: 12px;
 }
 
 .tw-tax-amount {
-  font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 16px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 2.75rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  margin-bottom: 18px;
 }
 
 .tw-tax-detail {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
-.tw-tax-detail>div {
+.tw-tax-detail > div {
   display: flex;
   justify-content: space-between;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--text-secondary);
-  padding: 6px 0;
+  padding: 8px 0;
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.tw-tax-detail>div:last-child {
+.tw-tax-detail > div:last-child {
   border-bottom: none;
 }
 
 .tw-vs {
-  font-size: 1.2rem;
-  font-weight: 800;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 900;
   color: var(--text-muted);
   text-align: center;
+  background: var(--bg-tertiary);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-subtle);
 }
 
 /* ── Chart ── */
 .tw-chart-card {
-  padding: 24px;
-  margin-bottom: 24px;
+  padding: 32px;
+  margin-bottom: 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
 }
 
 .tw-chart-card h3 {
-  margin-bottom: 16px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 20px;
 }
 
 .tw-chart-wrap {
-  height: 250px;
+  height: 270px;
 }
 
 /* ── Missed Deductions ── */
 .tw-missed {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .tw-missed h3 {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--accent-amber);
-  margin-bottom: 16px;
+  color: var(--accent-gold);
+  margin-bottom: 20px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
 }
 
 .tw-missed-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .tw-missed-card {
-  padding: 16px 20px;
+  padding: 22px 26px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
 }
 
 .tw-missed-header {
@@ -186,16 +259,23 @@
   margin-bottom: 8px;
 }
 
+.tw-missed-header h4 {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
 .tw-missed-potential {
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
   color: var(--accent-emerald);
 }
 
 .tw-missed-card p {
   color: var(--text-secondary);
-  font-size: 0.85rem;
-  line-height: 1.5;
+  font-size: 0.9rem;
+  line-height: 1.55;
 }
 
 /* ── AI Section ── */
@@ -203,35 +283,42 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--accent-blue);
-  margin-bottom: 16px;
+  color: var(--accent-bronze);
+  margin-bottom: 18px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+[data-theme='dark'] .tw-ai-section h3 {
+  color: var(--accent-gold);
 }
 
 .tw-ai-card {
-  padding: 20px 24px;
-  border-left: 3px solid var(--accent-blue);
+  padding: 26px 30px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--accent-gold);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
 }
 
 .tw-ai-card p {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   line-height: 1.7;
 }
 
-/* ── Responsive ── */
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .tw-form-grid {
     grid-template-columns: 1fr;
   }
-
   .tw-comparison {
     grid-template-columns: 1fr;
   }
-
   .tw-vs {
-    display: none;
+    margin: 0 auto;
   }
-
   .tw-form-row {
     grid-template-columns: 1fr;
   }

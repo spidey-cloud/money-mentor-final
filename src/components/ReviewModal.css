@@ -1,8 +1,13 @@
+/* ==========================================================================
+   MODERN FINTECH REVIEW MODAL (Stripe / Mercury Style)
+   ========================================================================== */
+
 .review-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(10, 14, 26, 0.8);
-  backdrop-filter: blur(8px);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   z-index: 2000;
   display: flex;
   align-items: center;
@@ -12,10 +17,14 @@
 
 .review-modal {
   width: 100%;
-  max-width: 500px;
-  padding: 40px;
+  max-width: 520px;
+  padding: 40px 36px;
   text-align: center;
   position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-dropdown);
   overflow: hidden;
 }
 
@@ -31,46 +40,57 @@
 
 .review-close {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background: none;
-  border: none;
-  color: var(--text-muted);
+  top: 18px;
+  right: 18px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: color 0.2s;
-}
-
-.review-close:hover {
-  color: var(--text-primary);
-}
-
-.review-icon-wrap {
-  width: 64px;
-  height: 64px;
-  background: var(--accent-blue-glow);
-  color: var(--accent-blue);
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 24px;
+  transition: all var(--transition-fast);
+}
+
+.review-close:hover {
+  background: var(--border-light);
+  color: var(--text-primary);
+}
+
+.review-icon-wrap {
+  width: 60px;
+  height: 60px;
+  background: var(--accent-blue-glow);
+  color: var(--accent-blue);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
 }
 
 .review-modal h2 {
-  font-size: 1.75rem;
-  margin-bottom: 12px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
 }
 
 .review-modal p {
   color: var(--text-secondary);
-  margin-bottom: 32px;
+  font-size: 1rem;
+  margin-bottom: 24px;
 }
 
 .star-rating {
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .star-btn {
@@ -78,40 +98,46 @@
   border: none;
   cursor: pointer;
   padding: 0;
-  transition: transform 0.2s, color 0.2s;
   color: var(--text-muted);
+  transition: transform var(--transition-fast), color var(--transition-fast);
 }
 
 .star-btn:hover {
-  transform: scale(1.2);
+  transform: scale(1.15);
 }
 
 .star-btn.active {
-  color: var(--accent-amber);
+  color: var(--accent-gold);
 }
 
-.review-textarea {
+.review-textarea,
+.review-feedback-input {
   width: 100%;
+  box-sizing: border-box;
   min-height: 120px;
-  background: rgba(255, 255, 255, 0.04);
+  padding: 14px 18px;
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   color: var(--text-primary);
-  padding: 16px;
-  font-family: inherit;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 1rem;
-  resize: none;
+  line-height: 1.6;
+  resize: vertical;
   margin-bottom: 24px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all var(--transition-fast);
+  display: block;
 }
 
-.review-textarea:focus {
-  border-color: var(--accent-blue);
+.review-textarea:focus,
+.review-feedback-input:focus {
+  border-color: var(--accent-mint);
+  box-shadow: 0 0 0 3px var(--accent-mint-glow);
 }
 
-@media (max-width: 480px) {
-  .review-modal {
-    padding: 30px 20px;
-  }
+.review-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
 }

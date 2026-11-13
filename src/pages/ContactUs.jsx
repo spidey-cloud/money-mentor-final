@@ -58,7 +58,7 @@ export default function ContactUs() {
             </div>
             <div className="info-details">
               <h4>Email Us</h4>
-              <p>support@moneymentor.ai</p>
+              <p>rohondutta02@gmail.com</p>
             </div>
           </div>
 
@@ -69,7 +69,26 @@ export default function ContactUs() {
             </div>
             <div className="info-details">
               <h4>Follow Our Journey</h4>
-              <p>Follow us on GitHub and LinkedIn</p>
+              <p>
+                Follow us on{' '}
+                <a
+                  href="https://github.com/spidey-cloud"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'inherit', textDecoration: 'none' }}
+                >
+                  GitHub
+                </a>
+                {' · '}
+                <a
+                  href="https://www.linkedin.com/in/rohon-kumar-dutta-08291a1b0/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'inherit', textDecoration: 'none' }}
+                >
+                  LinkedIn
+                </a>
+              </p>
             </div>
           </div>
         </div>

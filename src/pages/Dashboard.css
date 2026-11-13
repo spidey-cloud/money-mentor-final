@@ -1,53 +1,75 @@
-/* ── Dashboard Page ── */
+/* ==========================================================================
+   WARM EDITORIAL DASHBOARD (Wealthfront / Bespoke Wealth Style)
+   ========================================================================== */
+
 .dash-page {
-  max-width: 1000px;
+  max-width: 1060px;
   margin: 0 auto;
 }
 
 .dash-welcome {
   text-align: center;
-  padding: 40px 32px;
-  margin-bottom: 32px;
+  padding: 48px 36px;
+  margin-bottom: 36px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
 }
 
 .dash-welcome-icon {
-  color: var(--accent-blue);
-  margin-bottom: 12px;
-  filter: drop-shadow(0 0 12px var(--accent-blue-glow));
+  color: var(--accent-gold);
+  margin-bottom: 16px;
 }
 
 .dash-welcome h2 {
-  margin-bottom: 8px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 2.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 10px;
 }
 
 .dash-welcome p {
-  max-width: 500px;
+  max-width: 580px;
   margin: 0 auto;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
 }
 
 /* ── Tool Cards ── */
 .dash-tools-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-bottom: 40px;
+  gap: 18px;
+  margin-bottom: 50px;
 }
 
 .dash-tool-card {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 24px;
+  gap: 24px;
+  padding: 26px 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
   text-decoration: none;
   color: inherit;
-  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.dash-tool-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-gold);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .dash-tool-icon {
   width: 56px;
   height: 56px;
-  border-radius: var(--radius-md);
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,17 +77,17 @@
 }
 
 .dash-icon-emerald {
-  background: rgba(16, 185, 129, 0.12);
+  background: rgba(30, 81, 56, 0.1);
   color: var(--accent-emerald);
 }
 
 .dash-icon-amber {
-  background: rgba(245, 158, 11, 0.12);
-  color: var(--accent-amber);
+  background: rgba(194, 136, 52, 0.12);
+  color: var(--accent-gold);
 }
 
 .dash-icon-rose {
-  background: rgba(244, 63, 94, 0.12);
+  background: rgba(159, 43, 59, 0.1);
   color: var(--accent-rose);
 }
 
@@ -74,71 +96,99 @@
 }
 
 .dash-tool-info h3 {
-  font-size: 1.1rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .dash-tool-info p {
+  font-size: 0.925rem;
   color: var(--text-secondary);
-  font-size: 0.85rem;
-  margin-bottom: 8px;
 }
 
 .dash-tool-status {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .dash-arrow {
-  color: var(--accent-blue);
-  transition: transform var(--transition-fast);
+  color: var(--text-muted);
+  transition: transform var(--transition-fast), color var(--transition-fast);
 }
 
 .dash-tool-card:hover .dash-arrow {
   transform: translateX(4px);
+  color: var(--accent-gold);
 }
 
-/* ── Agents Section ── */
+/* ── Multi-Agent Architecture ── */
 .dash-agents-section {
-  margin-bottom: 32px;
+  margin-top: 20px;
 }
 
 .dash-agents-section h3 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: var(--text-secondary);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 24px;
 }
 
 .dash-agents-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
 }
 
 .dash-agent {
-  padding: 20px 16px;
-  text-align: center;
+  padding: 26px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-fast);
+}
+
+.dash-agent:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-light);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .dash-agent-badge {
-  font-size: 1.5rem;
-  margin-bottom: 8px;
+  font-size: 1.8rem;
+  margin-bottom: 12px;
 }
 
 .dash-agent h4 {
-  font-size: 0.8rem;
-  margin-bottom: 4px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
 }
 
 .dash-agent p {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  line-height: 1.4;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .dash-agents-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .dash-agents-grid {
+    grid-template-columns: 1fr;
+  }
+  .dash-tool-card {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

@@ -1,295 +1,326 @@
-/* ── Home Page ── */
+/* ==========================================================================
+   WARM EDITORIAL LANDING PAGE (Wealthfront / Editorial Bespoke)
+   ========================================================================== */
+
 .home-page {
   max-width: 1100px;
   margin: 0 auto;
+  padding-bottom: 40px;
 }
 
-/* ── Hero ── */
+/* ── Hero Section ── */
 .hero {
   text-align: center;
-  padding: 40px 0 60px;
+  padding: 60px 20px 80px;
+  position: relative;
 }
 
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 100px;
-  color: var(--accent-blue);
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-bottom: 24px;
+  padding: 7px 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  color: var(--accent-bronze);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 28px;
+  box-shadow: var(--card-shadow);
+}
+
+[data-theme='dark'] .hero-badge {
+  color: var(--accent-gold);
 }
 
 .hero-title {
-  font-size: 3.5rem;
-  font-weight: 900;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  margin-bottom: 20px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 4.25rem;
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  color: var(--text-primary);
+  margin-bottom: 24px;
 }
 
 .hero-subtitle {
-  font-size: 1.15rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.25rem;
   color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0 auto 32px;
+  max-width: 640px;
+  margin: 0 auto 40px;
   line-height: 1.7;
+  font-weight: 400;
 }
 
 .hero-actions {
   display: flex;
   gap: 16px;
   justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-/* ── Stats ── */
+/* ── Stats Section ── */
 .stats-section {
-  margin-bottom: 60px;
+  margin-bottom: 80px;
 }
 
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 20px;
 }
 
 .stat-card {
-  padding: 24px;
+  padding: 30px 20px;
   text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-fast);
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-gold);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .stat-icon {
-  color: var(--accent-blue);
-  margin-bottom: 8px;
+  color: var(--accent-bronze);
+  margin-bottom: 12px;
+}
+
+[data-theme='dark'] .stat-icon {
+  color: var(--accent-gold);
 }
 
 .stat-value {
-  font-size: 1.75rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 2.2rem;
   font-weight: 800;
-  margin-bottom: 4px;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+  color: var(--text-primary);
 }
 
 .stat-label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
-/* ── Features ── */
+/* ── Features Section ── */
 .features-section {
-  margin-bottom: 60px;
+  margin-bottom: 90px;
 }
 
 .section-heading {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   text-align: center;
-  font-size: 2rem;
-  margin-bottom: 40px;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 48px;
+  color: var(--text-primary);
 }
 
 .features-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: 26px;
 }
 
 .feature-card {
-  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  padding: 36px 30px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
   text-decoration: none;
   color: inherit;
   position: relative;
-  overflow: hidden;
-  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-.feature-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  opacity: 0;
-  transition: opacity var(--transition-normal);
-}
-
-.feature-card:hover::before {
-  opacity: 1;
+.feature-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-strong);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .feature-icon-wrap {
   width: 56px;
   height: 56px;
-  border-radius: var(--radius-md);
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .feature-icon-emerald {
-  background: rgba(16, 185, 129, 0.12);
+  background: rgba(30, 81, 56, 0.1);
   color: var(--accent-emerald);
-}
-
-.feature-icon-emerald+.feature-stats-badge {
-  color: var(--accent-emerald);
-}
-
-.feature-card:has(.feature-icon-emerald)::before {
-  background: var(--accent-emerald);
 }
 
 .feature-icon-amber {
-  background: rgba(245, 158, 11, 0.12);
-  color: var(--accent-amber);
-}
-
-.feature-icon-amber+.feature-stats-badge {
-  color: var(--accent-amber);
-}
-
-.feature-card:has(.feature-icon-amber)::before {
-  background: var(--accent-amber);
+  background: rgba(194, 136, 52, 0.12);
+  color: var(--accent-gold);
 }
 
 .feature-icon-rose {
-  background: rgba(244, 63, 94, 0.12);
+  background: rgba(159, 43, 59, 0.1);
   color: var(--accent-rose);
-}
-
-.feature-icon-rose+.feature-stats-badge {
-  color: var(--accent-rose);
-}
-
-.feature-card:has(.feature-icon-rose)::before {
-  background: var(--accent-rose);
 }
 
 .feature-stats-badge {
+  position: absolute;
+  top: 36px;
+  right: 30px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  margin-bottom: 12px;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
 }
 
 .feature-card h3 {
-  font-size: 1.25rem;
-  margin-bottom: 8px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text-primary);
 }
 
 .feature-card p {
+  font-size: 0.95rem;
   color: var(--text-secondary);
-  font-size: 0.9rem;
-  margin-bottom: 16px;
-  line-height: 1.6;
+  line-height: 1.65;
+  margin-bottom: 28px;
+  flex: 1;
 }
 
 .feature-link {
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: var(--accent-blue);
-  font-size: 0.875rem;
-  font-weight: 600;
+  gap: 8px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 0.925rem;
+  font-weight: 700;
+  color: var(--accent-bronze);
   transition: gap var(--transition-fast);
 }
 
+[data-theme='dark'] .feature-link {
+  color: var(--accent-gold);
+}
+
 .feature-card:hover .feature-link {
-  gap: 10px;
+  gap: 12px;
 }
 
 /* ── How It Works ── */
 .how-it-works {
-  margin-bottom: 40px;
+  margin-bottom: 90px;
+  padding: 56px 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
 }
 
 .steps-grid {
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 40px;
 }
 
 .step-card {
   flex: 1;
-  padding: 28px 24px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  text-align: center;
+  text-align: left;
+  padding: 18px;
 }
 
 .step-number {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 2rem;
-  font-weight: 900;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-weight: 800;
+  color: var(--accent-gold);
   margin-bottom: 12px;
 }
 
 .step-card h4 {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
   margin-bottom: 8px;
+  color: var(--text-primary);
 }
 
 .step-card p {
+  font-size: 0.925rem;
   color: var(--text-secondary);
-  font-size: 0.85rem;
   line-height: 1.6;
 }
 
 .step-connector {
-  width: 40px;
+  width: 44px;
   height: 2px;
-  background: var(--gradient-primary);
+  background: var(--border-light);
   flex-shrink: 0;
 }
 
-/* ── Reviews Selection ── */
+/* ── Reviews Section ── */
 .reviews-section {
-  margin-bottom: 80px;
-  text-align: center;
+  margin-bottom: 60px;
 }
 
 .review-display-card {
-  max-width: 600px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  position: relative;
+  padding: 44px 38px;
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
 }
 
 .review-quote-icon {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  opacity: 0.1;
-  color: var(--accent-blue);
+  color: var(--accent-gold);
+  opacity: 0.35;
+  margin-bottom: 14px;
 }
 
 .review-stars {
   display: flex;
-  gap: 4px;
-  color: var(--accent-amber);
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 20px;
 }
 
 .review-text {
-  font-size: 1.25rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.35rem;
   font-style: italic;
+  font-weight: 500;
   color: var(--text-primary);
   line-height: 1.6;
+  margin-bottom: 24px;
 }
 
 .review-author {
@@ -299,7 +330,9 @@
 }
 
 .author-name {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-weight: 700;
+  font-size: 1rem;
   color: var(--text-primary);
 }
 
@@ -308,13 +341,12 @@
   color: var(--text-muted);
 }
 
-.no-reviews-note {
-  color: var(--text-muted);
-  font-style: italic;
-}
-
 /* ── Responsive ── */
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
+  .hero-title {
+    font-size: 3rem;
+  }
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -322,23 +354,14 @@
   .features-grid {
     grid-template-columns: 1fr;
   }
-}
-
-@media (max-width: 768px) {
-  .hero-title {
-    font-size: 2.25rem;
-  }
-
-  .hero-actions {
-    flex-direction: column;
-  }
 
   .steps-grid {
     flex-direction: column;
+    gap: 24px;
   }
 
   .step-connector {
     width: 2px;
-    height: 30px;
+    height: 24px;
   }
 }

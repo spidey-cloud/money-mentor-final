@@ -1,7 +1,35 @@
 import { ArrowRight, Calculator, Flame, HeartPulse, IndianRupee, Quote, Shield, Sparkles, Star, TrendingUp, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { MotionAccordion } from '../components/MotionAccordion'
 import { useReview } from '../context/ReviewContext'
 import './Home.css'
+
+const faqItems = [
+  {
+    question: "What is MoneyMentor and how does it work?",
+    answer: "MoneyMentor is an AI-powered personal finance platform built for Indians. It uses a multi-agent AI system where specialized agents for Tax Optimization, FIRE Planning, and Financial Wellness work together to analyze your income, expenses, investments, and goals — delivering a personalized financial roadmap in seconds.",
+  },
+  {
+    question: "Is my financial data safe with MoneyMentor?",
+    answer: "Your privacy is our top priority. We never store bank passwords or sensitive credentials. All calculations run securely within your encrypted session, and we never share or sell your data to third parties. Our platform follows industry-standard security and privacy practices.",
+  },
+  {
+    question: "How does the FIRE Planner calculate my retirement number?",
+    answer: "The FIRE Planner factors in your current monthly expenses, expected inflation rate, equity and debt return assumptions, and your preferred safe withdrawal rate (like the 4% rule, adjusted for Indian markets). It then generates a month-by-month roadmap showing exactly when you can achieve financial independence.",
+  },
+  {
+    question: "Which tax regime should I choose — Old or New?",
+    answer: "That depends on your income and deductions. Our Tax Wizard compares your liability under both regimes side by side using the latest Budget rules. It automatically identifies deductions you may be missing under Section 80C, 80D, NPS (80CCD), and HRA — so you can pick the regime that saves you the most.",
+  },
+  {
+    question: "What does the Money Health Score measure?",
+    answer: "The Money Health Score evaluates your financial wellness across 6 key dimensions — savings rate, debt management, emergency fund adequacy, investment diversification, insurance coverage, and retirement readiness. You get an overall score plus specific recommendations to improve each area.",
+  },
+  {
+    question: "Is MoneyMentor completely free to use?",
+    answer: "Yes! You can use the Money Health Score, Tax Wizard, and FIRE Planner at no cost. For power users, we offer a Pro Plan with unlimited premium simulations, priority AI processing, advanced analytics, and continuous financial tracking.",
+  },
+]
 
 const features = [
   {
@@ -130,6 +158,14 @@ export default function Home() {
             <p>Receive personalized scores, tax-saving strategies, and a complete financial roadmap instantly.</p>
           </div>
         </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="faq-section animate-fade-in-up stagger-5" style={{ marginBottom: '80px' }}>
+        <h2 className="section-heading">
+          Frequently Asked <span className="text-gradient">Questions</span>
+        </h2>
+        <MotionAccordion items={faqItems} />
       </section>
 
       {/* Reviews Section */}

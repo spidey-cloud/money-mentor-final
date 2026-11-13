@@ -1,37 +1,67 @@
+/* ==========================================================================
+   MODERN FINTECH CONTACT US (Stripe / Mercury Style)
+   ========================================================================== */
+
 .contact-page {
-  padding: 40px 20px;
-  max-width: 1100px;
+  padding: 20px 20px 60px;
+  max-width: 1040px;
   margin: 0 auto;
 }
 
 .contact-header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 52px;
+}
+
+.contact-header h1 {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 2.85rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+
+.contact-header p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 580px;
+  margin: 0 auto;
 }
 
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
-  gap: 40px;
+  gap: 32px;
 }
 
 .contact-info {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .info-card {
-  padding: 30px;
+  padding: 26px 24px;
   display: flex;
-  gap: 20px;
+  gap: 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-fast);
+}
+
+.info-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-light);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .info-icon {
   width: 48px;
   height: 48px;
-  border-radius: 10px;
-  background: var(--accent-blue-glow);
+  border-radius: 12px;
+  background: rgba(37, 99, 235, 0.1);
   color: var(--accent-blue);
   display: flex;
   align-items: center;
@@ -40,17 +70,25 @@
 }
 
 .info-details h4 {
-  margin-bottom: 5px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 4px;
   color: var(--text-primary);
 }
 
 .info-details p {
   color: var(--text-secondary);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .contact-form-container {
-  padding: 40px;
+  padding: 36px 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
 }
 
 .contact-form {
@@ -62,82 +100,19 @@
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 16px;
 }
 
 textarea.input-field {
-  min-height: 150px;
+  min-height: 140px;
   resize: vertical;
 }
 
-.social-links {
-  display: flex;
-  gap: 15px;
-  margin-top: 10px;
-}
-
-.social-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  transition: all var(--transition-normal);
-  text-decoration: none;
-}
-
-.social-btn:hover {
-  background: var(--accent-blue-glow);
-  color: var(--accent-blue);
-  border-color: var(--accent-blue);
-  transform: translateY(-3px);
-}
-
-@media (max-width: 900px) {
+@media (max-width: 800px) {
   .contact-grid {
     grid-template-columns: 1fr;
   }
-}
-
-@media (max-width: 600px) {
   .form-row {
-    grid-template-columns: 1fr;
-  }
-}
-
-.faq-section {
-  margin-top: 80px;
-}
-
-.faq-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-  margin-top: 40px;
-}
-
-.faq-item {
-  padding: 32px;
-}
-
-.faq-item h4 {
-  margin-bottom: 12px;
-  color: var(--text-primary);
-  font-size: 1.1rem;
-}
-
-.faq-item p {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-
-@media (max-width: 768px) {
-  .faq-grid {
     grid-template-columns: 1fr;
   }
 }

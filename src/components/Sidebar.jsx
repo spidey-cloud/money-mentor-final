@@ -1,50 +1,83 @@
-import { Activity, Calculator, Flame, Home, LayoutDashboard, Sparkles, User } from 'lucide-react'
-import { NavLink } from 'react-router-dom'
+import * as React from 'react'
+import {
+  Activity,
+  Calculator,
+  Compass,
+  Flame,
+  Home,
+  LayoutDashboard,
+  Moon,
+  Sparkles,
+  Sun,
+  User
+} from 'lucide-react'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { useTheme } from '../context/ThemeContext'
+import { Dock } from './unlumen-ui/dock'
 import './Sidebar.css'
 
-const navItems = [
-  { path: '/', icon: Home, label: 'Home' },
-  { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { path: '/health-score', icon: Activity, label: 'Health Score' },
-  { path: '/tax-wizard', icon: Calculator, label: 'Tax Wizard' },
-  { path: '/fire-planner', icon: Flame, label: 'FIRE Planner' },
-  { path: '/guides', icon: Sparkles, label: 'Financial Guides' },
-  { path: '/pricing', icon: Sparkles, label: 'Upgrade Pro' },
-  { path: '/about', icon: Activity, label: 'About Us' },
-  { path: '/contact', icon: Calculator, label: 'Contact Us' },
-  { path: '/account', icon: User, label: 'My Account' },
-]
-
 export default function Sidebar() {
+  const { toggleTheme, isDark } = useTheme()
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const dockConfig = React.useMemo(() => [
+    { path: '/', icon: <Home size={22} />, label: 'Home' },
+    { path: '/dashboard', icon: <LayoutDashboard size={22} />, label: 'Dashboard' },
+    { path: '/health-score', icon: <Activity size={22} />, label: 'Health' },
+    { path: '/tax-wizard', icon: <Calculator size={22} />, label: 'Taxes' },
+    { path: '/fire-planner', icon: <Flame size={22} />, label: 'FIRE' },
+    { path: '/guides', icon: <Compass size={22} />, label: 'Guides' },
+    { path: '/pricing', icon: <Sparkles size={22} />, label: 'Pro', isPro: true, separator: true },
+    { path: '/account', icon: <User size={22} />, label: 'Account' },
+  ], [])
+
+  const dockItems = React.useMemo(() => {
+    return dockConfig.map((item) => ({
+      ...item,
+      isActive: item.path === '/'
+        ? location.pathname === '/'
+        : location.pathname.startsWith(item.path),
+      onClick: () => navigate(item.path),
+    }))
+  }, [dockConfig, location.pathname, navigate])
+
   return (
-    <aside className="sidebar">
-      <div className="sidebar-header">
-        <div className="sidebar-logo">
-          <Sparkles size={28} className="logo-icon" />
-          <div>
-            <h2 className="logo-title">MoneyMentor</h2>
-            <span className="logo-subtitle">AI-Powered Finance</span>
+    <>
+      {/* Top Floating Editorial Header */}
+      <header className="editorial-topbar">
+        <NavLink to="/" className="topbar-brand">
+          <span className="brand-monogram">M</span>
+          <div className="brand-text">
+            <span className="brand-name font-editorial">MoneyMentor</span>
+            <span className="brand-tag">Wealth Advisory AI</span>
           </div>
-        </div>
-      </div>
+        </NavLink>
 
-      <nav className="sidebar-nav">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            end={item.path === '/'}
-            className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}
+        <div className="topbar-actions">
+          <button
+            className="theme-pill-btn"
+            onClick={toggleTheme}
+            title={`Switch to ${isDark ? 'Light' : 'Dark'} theme`}
+            type="button"
           >
-            <item.icon size={20} />
-            <span>{item.label}</span>
-          </NavLink>
-        ))}
-      </nav>
+            {isDark ? <Sun size={15} /> : <Moon size={15} />}
+            <span>{isDark ? 'Light' : 'Dark'}</span>
+          </button>
+        </div>
+      </header>
 
-      <div className="sidebar-footer">
-        {/* Footer content removed */}
-      </div>
-    </aside>
+      {/* Floating Bottom Mac-style Dock Navigation */}
+      <nav className="mac-dock-container" aria-label="Quick navigation">
+        <Dock
+          items={dockItems}
+          magnification={2.0}
+          distance={125}
+          iconSize={48}
+          gap={10}
+          borderRadius={20}
+        />
+      </nav>
+    </>
   )
 }
