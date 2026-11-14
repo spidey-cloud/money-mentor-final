@@ -5,3 +5,4 @@ dist/
 semantic-review/
 .env
 *.local
+SYSTEM_OVERVIEW.md

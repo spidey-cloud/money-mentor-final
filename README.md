@@ -1,64 +1,107 @@
 # AI Money Mentor
 
-## AI Money Mentor
-**95% of Indians don't have a financial plan.** Financial advisors charge ₹25,000+ per year and serve only HNls. We built an AI-powered personal finance mentor that makes financial planning as accessible as checking WhatsApp.
+AI Money Mentor is a full-stack personal finance app for Indian users that combines financial calculators, tax guidance, and AI-powered planning. The product is designed to make complex money decisions more approachable through guided assessments, regime comparisons, and long-term projections.
 
-## 🚀 Vision
-MoneyMentor turns confused savers into confident investors by providing professional-grade financial planning for free. It uses a **Multi-Agent AI System** to analyze a user's financial life across multiple dimensions simultaneously.
+## Mission
 
-## ✨ Features
+A large portion of Indian households do not have a clear financial plan. Many people avoid professional advice because of cost, complexity, or trust gaps. AI Money Mentor brings a beginner-friendly, low-friction alternative by combining education, automation, and AI reasoning in one experience.
 
-- **Money Health Score**: A 5-minute onboarding flow that gives a comprehensive financial wellness score across 6 dimensions: Emergency Fund, Insurance, Investments, Debt, Tax, and Retirement.
-- **Tax Wizard**: Compare Old vs. New tax regimes with real-time calculations. identifies missed deductions (80C, 80D, NPS, HRA) and models savings.
-- **FIRE Path Planner**: Build a month-by-month financial roadmap to Financial Independence & Retire Early. Includes SIP recommendations and asset allocation strategies.
-- **AI Financial Advisor**: Personalized AI insights powered by **Google Gemini 2.0 Flash**, providing actionable advice for every assessment.
+## Core features
 
-## 🛠️ Tech Stack
+- Money Health Score
+  - Six-part assessment covering emergency funds, insurance, investments, debt health, tax efficiency, and retirement readiness.
+  - Produces an overall score and personalized recommendations.
 
-- **Frontend**: Vite + React 18, Chart.js (Data Visualization), Lucide React (Icons), Vanilla CSS (Glassmorphism UI).
-- **Backend**: Node.js + Express.js.
-- **AI Layer**: Google Gemini 2.0 Flash API.
-- **Architecture**: Multi-Agent Orchestration (Orchestrator + Specialized Domain Agents).
+- Tax Wizard
+  - Compares old vs new income-tax regimes.
+  - Surfaces missed deductions such as 80C, 80D, NPS, and HRA-linked exemptions.
+  - Shows tax estimates and regime recommendations.
 
-## 🚦 Getting Started
+- FIRE Planner
+  - Estimates retirement corpus requirements using inflation and return assumptions.
+  - Calculates a required monthly SIP and projects portfolio growth over time.
+  - Breaks down asset allocation into equity, debt, gold, and cash buckets.
+
+- AI insights
+  - Sends structured user data to an Express backend and orchestrates domain-specific AI agents.
+  - Uses Google Gemini to return actionable advice.
+
+## Tech stack
+
+- Frontend: React 19, Vite, Chart.js, Lucide icons, custom CSS
+- Backend: Node.js + Express
+- AI: Google Gemini via the Generative AI SDK
+- Persistence: browser localStorage for demo state and lightweight app data
+- Email: Nodemailer for contact form delivery (optional)
+
+## Local setup
 
 ### Prerequisites
-- Node.js (v18+)
+
+- Node.js 18+
 - npm
 
-### Installation
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd ai-money-mentor
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Set up environment variables:
-   - Create a `.env` file in the root directory.
-   - Add your Gemini API Key:
-     ```env
-     GEMINI_API_KEY=your_api_key_here
-     ```
+### Install dependencies
 
-### Running the App
-1. Start the backend server:
-   ```bash
-   npm run server
-   ```
-2. Start the frontend development server:
-   ```bash
-   npm run dev
-   ```
-3. Open [http://localhost:5173](http://localhost:5173) in your browser.
+```bash
+npm install
+```
 
-## 📂 Project Structure
-- `/src`: React frontend (Pages, Components, Assets, Styles).
-- `/server`: Express backend and AI Agent logic.
-  - `/agents`: Multi-agent implementation (Orchestrator, Health, Tax, FIRE).
-  - `/utils`: AI integration utilities.
+### Environment variables
 
-## 📝 License
+Create a `.env` file in the project root with the following values:
+
+```env
+GEMINI_API_KEY=your_google_gemini_key
+ALLOWED_ORIGIN=http://localhost:5173
+PORT=3001
+
+# Optional contact form configuration
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
+CONTACT_EMAIL=hello@yourdomain.com
+```
+
+If the frontend and backend run from the same origin, you can leave `VITE_API_BASE_URL` empty in the browser app. For separate deployments, set it to the backend URL in the frontend environment.
+
+### Start the app
+
+Backend:
+
+```bash
+npm run server
+```
+
+Frontend:
+
+```bash
+npm run dev
+```
+
+Open http://localhost:5173 in the browser.
+
+## Project structure
+
+```text
+src/
+  components/
+  context/
+  lib/
+  pages/
+  assets/
+server/
+  agents/
+  utils/
+  index.js
+lib/
+  format.js
+public/
+```
+
+## Important notes
+
+This repository is a product prototype and demo app. Several flows are intentionally simplified for speed and usability, and some state remains client-side for a lightweight experience. For production-grade deployment, the app should move toward server-managed authentication, verified user sessions, and stricter backend validation.
+
+## License
+
 MIT

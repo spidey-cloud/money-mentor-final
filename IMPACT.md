@@ -1,34 +1,78 @@
-# AI Money Mentor — Impact Model
+# Impact model
 
-## Overview
-MoneyMentor addresses a critical gap in the Indian financial landscape: the **Professional Advice Gap**. With only ~14 crore Demat accounts but millions of confused retail investors, the potential for impact is immense.
+AI Money Mentor is designed to close a meaningful gap in the Indian personal-finance market: many households have limited access to credible, affordable financial guidance. The product aims to reduce the cost and friction of getting actionable financial advice while improving user confidence in planning decisions.
 
-## 📊 Quantified Business Impact
+## Why this matters
 
-### 1. Cost Savings for Users
-- **Assumption**: 1,000 active users per month.
-- **Traditional Cost**: Financial advisor fee = ₹25,000/year.
-- **AI Solution Cost**: ₹0/year.
-- **Total User Savings**: **₹2.5 Crore/year** saved for the community.
+Personal finance is often delayed because users do not know where to begin. Traditional advisory services remain expensive for many households, while generic financial content is too fragmented to be actionable. AI Money Mentor helps users move from uncertainty to a structured understanding of their financial health, tax position, and retirement roadmap.
 
-### 2. Tax Optimization
-- **Assumption**: Average user income ₹12L/year.
-- **Tax Savings Recovery**: Identifying just ₹1.5L in missed 80C/80D deductions.
-- **Average Impact**: ₹45,000 saved per user (30% tax bracket).
-- **Total Community Tax Saved**: **₹4.5 Crore** (for 1,000 users).
+## Product impact areas
 
-### 3. Investment Growth (The FIRE Effect)
-- **Assumption**: 20% improvement in savings rate due to automated planning.
-- **Increase in SIP**: From ₹20,000 to ₹24,000/month.
-- **Long-term Impact**: Over 20 years at 12% CAGR, this ₹4,000 gap becomes **₹40 Lakhs** of additional wealth per person.
+### 1. Cost savings for users
 
-## 🏁 Measurable Outcome Goals
-- **Reduce Personal Finance Planning Time** from 10+ hours (spread over days) to **under 10 minutes**.
-- **100% Auditability**: Every AI decision is documented, reducing "black box" distrust.
-- **Democratization**: Providing HNI-level advice to entry-level earners (e.g., first-time earners with ₹30k/month income).
+A common barrier to professional advice is price. Many users pay thousands or lakhs annually for tax or financial planning support, while a simple digital product can provide foundational guidance at a fraction of the cost.
 
-## 🧠 Assumptions & Logic
-- **Data used**: Based on current FY 2025-26 Indian Income Tax slabs.
-- **Inflation**: Fixed at 6%.
-- **CAGR**: Conservative (8%), Moderate (10%), Aggressive (12%).
-- **Adoption**: Viral growth potential via ET's existing ecosystem (8.8M page views/mo).
+Example model:
+
+- 1,000 active users per month
+- average advisory cost avoided: ₹25,000 per year
+- estimated annual savings: ₹2.5 crore
+
+The value is not only in direct pricing but in time saved and reduced uncertainty when making decisions.
+
+### 2. Tax optimization value
+
+For working professionals, missed deductions and regime selection can materially change annual tax outgo. A user who improves tax planning by even a modest amount can save meaningfully over time.
+
+Example model:
+
+- average yearly income: ₹12 lakh
+- missed tax-saving opportunity: ₹1.5 lakh in eligible deductions
+- annual tax impact per user: around ₹45,000
+- community impact for 1,000 users: approximately ₹4.5 crore
+
+This is especially relevant in India, where many salaried individuals under-claim deductions or fail to compare tax regimes effectively.
+
+### 3. Better long-term investing behavior
+
+The FIRE planner specifically supports long-term behavior change by helping users estimate the gap between current savings and their desired financial independence target. This helps users act on savings and investing earlier instead of postponing financial decision-making.
+
+Illustrative model:
+
+- increase monthly SIP by ₹4,000
+- assume long-term CAGR near 12%
+- additional wealth over 20 years can grow into tens of lakhs per user
+
+This can materially improve savings consistency and raise financial discipline over time.
+
+## Measurable outcome goals
+
+The project is designed to improve user outcomes in the following ways:
+
+- reduce financial planning effort from several hours to under 10 minutes for a first-pass assessment
+- expose high-value tax and retirement decisions in a more understandable format
+- give users a clearer understanding of risk, protection, and savings behavior
+- create a practical financial literacy layer that supports ongoing engagement
+
+## Assumptions
+
+The project currently uses simplified financial assumptions for a prototype context:
+
+- Indian personal finance taxonomy and tax assumptions
+- 6% inflation assumption in FIRE planning
+- return-rate ranges such as conservative, moderate, and aggressive investing scenarios
+- a demo-first user flow centered on awareness, planning, and decision support
+
+## Strategic value
+
+AI Money Mentor creates value in three dimensions:
+
+1. Accessibility: makes complex financial advice easier to understand.
+2. Affordability: reduces the cost barrier to financial guidance.
+3. Education: improves user confidence and decision quality over time.
+
+This makes it especially valuable for early-career professionals, salaried households, and first-time investors who want a structured starting point without the friction of a traditional advisory relationship.
+
+## Summary
+
+The product is not just a calculator. It is a decision-support and educational tool that helps users understand their financial baseline, detect planning gaps, and build a more intentional path toward long-term security.

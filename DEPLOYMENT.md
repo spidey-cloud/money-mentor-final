@@ -1,72 +1,128 @@
-# 🚀 Deployment Guide — AI Money Mentor
+# Deployment guide
 
-To make your submission stand out, having a live working link is highly recommended. Here is how to deploy both the Frontend and the Backend.
+This project is configured as a Vite + React frontend with an Express backend. It can be run locally or deployed to a single-platform hosting flow such as Vercel, or split across separate frontend and API deployments.
 
----
+## Local development
 
-## 🏆 100% FREE & Unified Path (Recommended)
-You can deploy both the Frontend and Backend on **Vercel** as a single project!
+### 1. Install dependencies
 
-### Steps for Unified Vercel Deployment:
-1.  **Vercel Dashboard**: Click **Add New** > **Project**.
-2.  **Connect GitHub**: Select your `ai-money-mentor` repo.
-3.  **Configure Project**:
-    - **Framework Preset**: `Vite` (It should detect this automatically).
-    - **Root Directory**: Leave as `./`.
-4.  **Environment Variables**:
-    - Add `GEMINI_API_KEY`: `(Your actual Gemini API Key from Google AI Studio)`.
-    - *(Note: You don't need `VITE_API_BASE_URL` anymore as they share the same domain!)*
-5.  **Click "Deploy"**.
-
-**Your entire app (UI + AI Agents) is now live on a single Vercel link!** 🚀🔥
-
----
-
-## 2. Deploy the Frontend (React App)
-We recommend **Vercel** or **Netlify** for the frontend.
-
-### Using Vercel:
-1.  Create a free account on [Vercel.com](https://vercel.com/).
-2.  Click **Add New** > **Project**.
-3.  Connect your GitHub repository.
-4.  **Before clicking Deploy**, find the **Environment Variables** section:
-    - Add `VITE_API_BASE_URL`: `(The Backend URL you copied from Step 1)`
-5.  **Build Settings**: The defaults for Vite (Build: `npm run build`, Output: `dist`) should work automatically.
-6.  Click **Deploy**. You now have a live link!
-
----
-
-## 3. Update the Frontend Code (If needed)
-In your `vite.config.js`, you are currently proxying to `localhost:3001`. For the production link to work perfectly, ensure your API calls in the code (e.g., in `HealthScore.jsx`) use the production URL when available.
-
-**Pro Tip**: The easiest way is to use an environment variable in your React code:
-```js
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-// Use API_URL in your fetch() calls
+```bash
+npm install
 ```
 
----
+### 2. Add environment variables
 
-## 4. Final Verification
-- [ ] Open your live Vercel link.
-- [ ] Try taking a Health Score test.
-- [ ] Ensure the AI insights load (this confirms the Frontend is talking to the Backend).
+Create a `.env` file in the project root:
 
----
+```env
+PORT=3001
+GEMINI_API_KEY=your_google_gemini_key
+ALLOWED_ORIGIN=http://localhost:5173
 
-## 🏗️ Alternative Hosting Options
+# Optional contact form
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
+CONTACT_EMAIL=hello@yourdomain.com
+```
 
-If you prefer different platforms, here are the best alternatives:
+### 3. Run the app
 
-### For Backend (API):
-*   **Railway.app**: Extremely fast setup ($5 free credit). Ideal for Node.js apps.
-    *   *Setup*: Connect GitHub > Add Variables > Deploy.
-*   **Google Cloud Run**: Professional grade. Best if you want to stay in the Google ecosystem (fitting for a Gemini app).
-*   **Fly.io**: Good for low-latency globally, but requires more terminal setup.
+Backend:
 
-### For Frontend (UI):
-*   **Netlify**: A direct alternative to Vercel. Works identically (Connect GitHub > Deploy).
-*   **Firebase Hosting**: Part of Google's Firebase suite. Very reliable and free for small projects.
-*   **GitHub Pages**: Completely free, but requires a small trick for React Router (use `HashRouter` instead of `BrowserRouter` if you hit 404s on page refresh).
+```bash
+npm run server
+```
 
-**Regardless of the site you choose, remember to always set your `GEMINI_API_KEY` in the platform's "Environment Variables" settings!** �️
+Frontend:
+
+```bash
+npm run dev
+```
+
+The app is then available at:
+
+- Frontend: http://localhost:5173
+- Backend: http://localhost:3001
+
+## Production deployment options
+
+### Option A: Single deployment on Vercel (recommended for demos)
+
+This app is already set up as a Vite project, and the Express API can live alongside the frontend when the same deployment host serves both.
+
+Steps:
+
+1. Push the repository to GitHub.
+2. Import the repo in Vercel.
+3. Choose the Vite project type and keep the root directory as `./`.
+4. Add environment variables in the Vercel project settings:
+   - `GEMINI_API_KEY`
+   - `ALLOWED_ORIGIN` (for example `https://your-app.vercel.app`)
+   - `PORT` (optional for local dev but usually not needed in a serverless environment)
+   - `EMAIL_USER`, `EMAIL_PASS`, `CONTACT_EMAIL` if using the contact form
+5. Deploy.
+
+If the app is served from the same domain, the frontend can usually leave `VITE_API_BASE_URL` empty so it makes relative calls to the same origin.
+
+### Option B: Separate frontend and backend hosts
+
+If the frontend is hosted on Vercel or Netlify while the backend runs elsewhere, set:
+
+```env
+VITE_API_BASE_URL=https://your-backend-domain.com
+```
+
+and ensure the backend’s `ALLOWED_ORIGIN` matches the frontend origin.
+
+## Recommended environment settings
+
+### Required
+
+- `GEMINI_API_KEY`
+
+### Backend-only
+
+- `ALLOWED_ORIGIN`
+- `PORT`
+- `EMAIL_USER`
+- `EMAIL_PASS`
+- `CONTACT_EMAIL`
+
+### Frontend-only
+
+- `VITE_API_BASE_URL` when the API is not on the same origin
+
+## Post-deploy verification
+
+After deployment, verify the following:
+
+- The app loads without build issues.
+- Health-score submissions return AI insights.
+- Tax-wizard form submissions complete successfully.
+- FIRE planner endpoints respond successfully.
+- Contact submissions deliver if email credentials are configured.
+
+## Production hardening notes
+
+The current repo is best treated as a product demo or prototype. For production use, it should include:
+
+- authenticated user sessions on the backend
+- backend enforcement of premium access and credit usage
+- stricter validation and rate-limiting policy for all endpoints
+- staging and production environment separation
+
+## Hosting alternatives
+
+- Vercel: suitable for combined frontend plus API hosting
+- Netlify: good for the frontend experience alone
+- Railway: convenient for Node.js backends
+- Render: simple deployment for Express services
+- Google Cloud Run: production-grade option for a backend API
+
+## Final checklist
+
+- [ ] Gemini API key configured
+- [ ] Correct CORS origin set
+- [ ] Frontend API URL configured for non-shared deployments
+- [ ] Contact-form email credentials set if used
+- [ ] App tested in a production-like environment
