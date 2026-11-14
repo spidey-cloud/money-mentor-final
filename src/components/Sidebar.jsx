@@ -6,18 +6,14 @@ import {
   Flame,
   Home,
   LayoutDashboard,
-  Moon,
   Sparkles,
-  Sun,
   User
 } from 'lucide-react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { useTheme } from '../context/ThemeContext'
 import { Dock } from './unlumen-ui/dock'
 import './Sidebar.css'
 
 export default function Sidebar() {
-  const { toggleTheme, isDark } = useTheme()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -53,18 +49,6 @@ export default function Sidebar() {
             <span className="brand-tag">Wealth Advisory AI</span>
           </div>
         </NavLink>
-
-        <div className="topbar-actions">
-          <button
-            className="theme-pill-btn"
-            onClick={toggleTheme}
-            title={`Switch to ${isDark ? 'Light' : 'Dark'} theme`}
-            type="button"
-          >
-            {isDark ? <Sun size={15} /> : <Moon size={15} />}
-            <span>{isDark ? 'Light' : 'Dark'}</span>
-          </button>
-        </div>
       </header>
 
       {/* Floating Bottom Mac-style Dock Navigation */}

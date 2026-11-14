@@ -1,5 +1,6 @@
 import { CheckCircle2, Lock, Sparkles, X } from 'lucide-react'
 import { useCredits } from '../context/CreditContext'
+import { PLANS } from '../lib/plans'
 import './PaywallModal.css'
 
 export default function PaywallModal() {
@@ -25,30 +26,34 @@ export default function PaywallModal() {
         <div className="paywall-plans">
           {/* Monthly Plan */}
           <div className="plan-card glass-card">
-            <div className="plan-title">Monthly Access</div>
+            <div className="plan-title">{PLANS.monthly.label}</div>
             <div className="plan-price">
-              <span className="currency">₹</span><span className="amount">199</span><span className="period">/mo</span>
+              <span className="currency">₹</span>
+              <span className="amount">{PLANS.monthly.price.toLocaleString('en-IN')}</span>
+              <span className="period">{PLANS.monthly.period}</span>
             </div>
             <ul className="plan-features">
-              <li><CheckCircle2 size={16} /> Unlimited Health Scores</li>
-              <li><CheckCircle2 size={16} /> Advanced Tax Optimization</li>
-              <li><CheckCircle2 size={16} /> Dynamic FIRE Planning</li>
+              {PLANS.monthly.features.filter(f => f.included).map(f => (
+                <li key={f.text}><CheckCircle2 size={16} /> {f.text}</li>
+              ))}
             </ul>
             <button className="btn btn-secondary" onClick={simulateSubscription}>Subscribe Monthly</button>
           </div>
 
-          {/* Yearly Plan (Popular) */}
+          {/* Yearly Plan */}
           <div className="plan-card glass-card plan-popular">
             <div className="popular-badge"><Sparkles size={14} /> Best Value</div>
-            <div className="plan-title">Pro Yearly</div>
+            <div className="plan-title">{PLANS.yearly.label}</div>
             <div className="plan-price">
-              <span className="currency">₹</span><span className="amount">1,999</span><span className="period">/yr</span>
+              <span className="currency">₹</span>
+              <span className="amount">{PLANS.yearly.price.toLocaleString('en-IN')}</span>
+              <span className="period">{PLANS.yearly.period}</span>
             </div>
-            <p className="plan-savings">Save ₹389 / year</p>
+            <p className="plan-savings">Save ₹{PLANS.yearly.savings} / year</p>
             <ul className="plan-features">
-              <li><CheckCircle2 size={16} /> Everything in Monthly</li>
-              <li><CheckCircle2 size={16} /> Priority AI Processing</li>
-              <li><CheckCircle2 size={16} /> Export to PDF / Excel</li>
+              {PLANS.yearly.features.filter(f => f.included).map(f => (
+                <li key={f.text}><CheckCircle2 size={16} /> {f.text}</li>
+              ))}
             </ul>
             <button className="btn btn-primary" onClick={simulateSubscription}>Upgrade to Pro</button>
           </div>

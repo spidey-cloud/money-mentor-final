@@ -1,6 +1,7 @@
 import { CheckCircle2, Sparkles, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useCredits } from '../context/CreditContext'
+import { PLANS } from '../lib/plans'
 import './Pricing.css'
 
 export default function Pricing() {
@@ -33,35 +34,41 @@ export default function Pricing() {
         <div className="pricing-plans">
           {/* Monthly Plan */}
           <div className="plan-card glass-card">
-            <div className="plan-title">Monthly Access</div>
+            <div className="plan-title">{PLANS.monthly.label}</div>
             <div className="plan-price">
-              <span className="currency">₹</span><span className="amount">199</span><span className="period">/mo</span>
+              <span className="currency">₹</span>
+              <span className="amount">{PLANS.monthly.price.toLocaleString('en-IN')}</span>
+              <span className="period">{PLANS.monthly.period}</span>
             </div>
-            <p className="plan-description">Perfect for a quick financial checkup.</p>
+            <p className="plan-description">{PLANS.monthly.description}</p>
             <ul className="plan-features">
-              <li><CheckCircle2 size={16} /> Unlimited Health Scores</li>
-              <li><CheckCircle2 size={16} /> Advanced Tax Optimization</li>
-              <li><CheckCircle2 size={16} /> Dynamic FIRE Planning</li>
-              <li className="text-slate-400"><X size={16} /> Priority Processing</li>
-              <li className="text-slate-400"><X size={16} /> Export to PDF</li>
+              {PLANS.monthly.features.map(f => (
+                <li key={f.text} className={f.included ? '' : 'text-slate-400'}>
+                  {f.included ? <CheckCircle2 size={16} /> : <X size={16} />} {f.text}
+                </li>
+              ))}
             </ul>
             <button className="btn btn-secondary mt-auto" onClick={simulateSubscription}>Subscribe Monthly</button>
           </div>
 
-          {/* Yearly Plan (Popular) */}
+          {/* Yearly Plan */}
           <div className="plan-card glass-card plan-popular">
             <div className="popular-badge"><Sparkles size={14} /> Best Value</div>
-            <div className="plan-title text-amber">Pro Yearly</div>
+            <div className="plan-title text-amber">{PLANS.yearly.label}</div>
             <div className="plan-price">
-              <span className="currency">₹</span><span className="amount">1,999</span><span className="period">/yr</span>
+              <span className="currency">₹</span>
+              <span className="amount">{PLANS.yearly.price.toLocaleString('en-IN')}</span>
+              <span className="period">{PLANS.yearly.period}</span>
             </div>
-            <p className="plan-savings">Save ₹389 / year</p>
+            <p className="plan-savings">Save ₹{PLANS.yearly.savings} / year</p>
             <ul className="plan-features">
-              <li><CheckCircle2 size={16} /> Everything in Monthly</li>
-              <li><CheckCircle2 size={16} className="text-amber" /> Priority AI Processing</li>
-              <li><CheckCircle2 size={16} className="text-amber" /> Direct email support</li>
-              <li><CheckCircle2 size={16} className="text-amber" /> Export to PDF / Excel</li>
-              <li><CheckCircle2 size={16} className="text-amber" /> Early access to new agents</li>
+              {PLANS.yearly.features.map(f => (
+                <li key={f.text} className={f.included ? '' : 'text-slate-400'}>
+                  {f.included
+                    ? <CheckCircle2 size={16} className="text-amber" />
+                    : <X size={16} />} {f.text}
+                </li>
+              ))}
             </ul>
             <button className="btn btn-primary mt-auto" onClick={simulateSubscription}>Upgrade to Pro</button>
           </div>
@@ -70,7 +77,7 @@ export default function Pricing() {
 
       <div className="pricing-faq mt-8">
         <p className="text-slate-400 text-sm text-center">
-          Payment is simulated for this hackathon demo. No real transactions will occur. <br />
+          Payment is simulated for this hackathon demo. No real transactions will occur.<br />
           Mock secured by Razorpay.
         </p>
       </div>

@@ -40,9 +40,6 @@ export default function ContactUs() {
     }
   }
 
-  // Note: MessageSquare might be missing, so we use Calculator as fallback if needed.
-  // But let me check if MessageSquare is in any file.
-
   return (
     <div className="contact-page animate-fade-in">
       <section className="contact-header animate-fade-in-up">

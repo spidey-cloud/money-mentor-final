@@ -1,37 +1,39 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
+import { readJSON, writeJSON } from '../lib/storage'
 
 const ReviewContext = createContext()
 
+const MAX_STORED_REVIEWS = 50
+
 export function ReviewProvider({ children }) {
-  const [reviews, setReviews] = useState([])
+  const [reviews, setReviews] = useState(() => readJSON('moneymentor_reviews', []))
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [lastAnalysisType, setLastAnalysisType] = useState('')
+  const reviewTimerRef = useRef(null)
 
+  // Persist on change — load is handled by the lazy useState initializer above.
   useEffect(() => {
-    const saved = localStorage.getItem('moneymentor_reviews')
-    if (saved) {
-      setReviews(JSON.parse(saved))
-    }
-  }, [])
+    writeJSON('moneymentor_reviews', reviews)
+  }, [reviews])
 
   const saveReview = (review) => {
-    const newReviews = [...reviews, { ...review, id: Date.now(), date: new Date().toISOString() }]
-    setReviews(newReviews)
-    localStorage.setItem('moneymentor_reviews', JSON.stringify(newReviews))
+    const next = [
+      ...reviews,
+      { ...review, id: Date.now(), date: new Date().toISOString() },
+    ].slice(-MAX_STORED_REVIEWS)   // cap to avoid QuotaExceededError
+    setReviews(next)
     setIsModalOpen(false)
   }
 
-  const triggerReview = (type) => {
+  const triggerReview = (type, delayMs = 2000) => {
+    // Cancel any pending trigger so the modal never fires on the wrong page.
+    clearTimeout(reviewTimerRef.current)
     setLastAnalysisType(type)
-    // Small delay to let the results animation finish
-    setTimeout(() => {
-      setIsModalOpen(true)
-    }, 2000)
+    reviewTimerRef.current = setTimeout(() => setIsModalOpen(true), delayMs)
   }
 
   const getTopReview = () => {
     if (reviews.length === 0) return null
-    // Sort by rating (desc) and then by date (desc)
     return [...reviews].sort((a, b) => {
       if (b.rating !== a.rating) return b.rating - a.rating
       return new Date(b.date) - new Date(a.date)
@@ -46,7 +48,7 @@ export function ReviewProvider({ children }) {
       saveReview,
       triggerReview,
       getTopReview,
-      lastAnalysisType
+      lastAnalysisType,
     }}>
       {children}
     </ReviewContext.Provider>

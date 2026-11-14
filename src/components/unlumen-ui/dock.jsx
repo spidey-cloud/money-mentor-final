@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import * as React from "react";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "motion/react";
 
@@ -73,7 +73,7 @@ function DockIcon({
             "text-foreground/70 transition-colors duration-150",
             "hover:bg-foreground/[0.06] hover:text-foreground",
             "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground/20",
-            "[&_svg]:size-[55%]"
+            "[&_svg]:size-[60%]"
           )}>
           {item.icon}
         </Tag>
@@ -102,7 +102,7 @@ export function Dock({
   const mouseX = useMotionValue(Infinity);
   const dockRef = React.useRef(null);
 
-  const iconRefs = React.useRef(items.map(() => React.createRef()));
+  const iconRefs = React.useRef([]);
 
   const [hoveredIndex, setHoveredIndex] = React.useState(null);
   const [tooltipX, setTooltipX] = React.useState(0);
@@ -158,7 +158,7 @@ export function Dock({
             alwaysShowLabels={alwaysShowLabels}
             springOptions={springOptions}
             onHover={handleHover}
-            iconRef={iconRefs.current[i]} />
+            iconRef={iconRefs.current[i] ?? (iconRefs.current[i] = React.createRef())} />
           {item.separator && <DockSeparator />}
         </React.Fragment>
       ))}
@@ -171,33 +171,43 @@ export function Dock({
               className="pointer-events-none absolute flex flex-col items-center z-50"
               style={{
                 left: tooltipX,
-                bottom: tooltipBottomOffset + 8,
+                bottom: tooltipBottomOffset + 10,
                 x: "-50%",
               }}
-              initial={{ opacity: 0, y: 6, scale: 0.94 }}
+              initial={{ opacity: 0, y: 5, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 6, scale: 0.94 }}
-              transition={{ duration: 0.13, ease: "easeOut" }}>
+              exit={{ opacity: 0, y: 5, scale: 0.95 }}
+              transition={{ duration: 0.12, ease: "easeOut" }}>
               <span
-                className="rounded-lg border border-foreground/15 bg-background px-3.5 py-1.5 font-semibold text-foreground shadow-md whitespace-nowrap"
                 style={{
-                  fontSize: "1.05rem",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "#ffffff",
+                  color: "#18181b",
+                  fontSize: "13.5px",
+                  fontWeight: 500,
+                  lineHeight: "1.2",
                   letterSpacing: "-0.01em",
-                  background: "var(--text-primary)",
-                  color: "var(--text-inverse)",
-                  border: "1px solid var(--border-subtle)",
-                  boxShadow: "var(--card-shadow-hover)",
+                  padding: "5px 12px",
+                  borderRadius: "9px",
+                  border: "1px solid rgba(0, 0, 0, 0.08)",
+                  boxShadow: "0 4px 14px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04)",
+                  whiteSpace: "nowrap",
+                  fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
                 }}>
                 {items[hoveredIndex].label}
               </span>
               <svg
-                width="10"
+                width="9"
                 height="5"
-                viewBox="0 0 10 5"
-                className="-mt-px"
-                style={{ color: "var(--text-primary)" }}
-                aria-hidden>
-                <path d="M0 0L5 5L10 0" fill="currentColor" />
+                viewBox="0 0 9 5"
+                style={{
+                  marginTop: "-1px",
+                  filter: "drop-shadow(0 1px 1px rgba(0, 0, 0, 0.04))",
+                }}
+                aria-hidden="true">
+                <path d="M0 0L4.5 4.5L9 0" fill="#ffffff" stroke="rgba(0,0,0,0.06)" strokeWidth="0.5" />
               </svg>
             </motion.div>
           )}

@@ -1,8 +1,9 @@
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
+import rateLimit from 'express-rate-limit'
 import nodemailer from 'nodemailer'
-import { getAuditLog, orchestrate } from './agents/orchestrator.js'
+import { orchestrate } from './agents/orchestrator.js'
 import { initGemini } from './utils/gemini.js'
 
 dotenv.config()
@@ -10,9 +11,28 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 3001
 
-// Middleware
-app.use(cors())
+// ── Middleware ──
+
+// Restrict CORS to the configured origin. Falls back to localhost in dev.
+const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:5173'
+app.use(cors({ origin: allowedOrigin }))
 app.use(express.json({ limit: '1mb' }))
+
+// Rate limiter for AI endpoints: 10 requests per IP per minute.
+const aiLimiter = rateLimit({
+  windowMs: 60_000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests. Please wait a moment and try again.' },
+})
+
+// Stricter limiter for the contact form: 3 per IP per 10 minutes.
+const contactLimiter = rateLimit({
+  windowMs: 10 * 60_000,
+  max: 3,
+  message: { error: 'Too many contact submissions. Please wait before trying again.' },
+})
 
 // Initialize Gemini
 initGemini(process.env.GEMINI_API_KEY)
@@ -20,7 +40,7 @@ initGemini(process.env.GEMINI_API_KEY)
 // ── API Routes ──
 
 // Health Score Analysis
-app.post('/api/health-score', async (req, res) => {
+app.post('/api/health-score', aiLimiter, async (req, res) => {
   try {
     const { answers, scores } = req.body
     if (!answers || !scores) {
@@ -29,78 +49,66 @@ app.post('/api/health-score', async (req, res) => {
     const result = await orchestrate('health-score', { answers, scores })
     res.json(result)
   } catch (err) {
-    console.error('Health Score error:', err)
+    console.error('Health Score error:', err.message)
     res.status(500).json({ error: 'Analysis failed', insights: '' })
   }
 })
 
 // Tax Wizard Analysis
-app.post('/api/tax-wizard', async (req, res) => {
+app.post('/api/tax-wizard', aiLimiter, async (req, res) => {
   try {
     const { salary, deductions, results } = req.body
     if (!results) {
       return res.status(400).json({ error: 'Missing tax results' })
     }
-    const result = await orchestrate('tax-wizard', { salary, deductions, results })
+    // Sanitize numeric fields before they reach the AI prompt.
+    const safeResults = {
+      ...results,
+      grossIncome: Math.round(Math.abs(Number(results.grossIncome) || 0)),
+      oldRegime: sanitizeTaxRegime(results.oldRegime),
+      newRegime: sanitizeTaxRegime(results.newRegime),
+      savings: Math.round(Math.abs(Number(results.savings) || 0)),
+    }
+    const result = await orchestrate('tax-wizard', { salary, deductions, results: safeResults })
     res.json(result)
   } catch (err) {
-    console.error('Tax Wizard error:', err)
+    console.error('Tax Wizard error:', err.message)
     res.status(500).json({ error: 'Analysis failed', insights: '' })
   }
 })
 
 // FIRE Planner
-app.post('/api/fire-planner', async (req, res) => {
+app.post('/api/fire-planner', aiLimiter, async (req, res) => {
   try {
     const { plan, ...data } = req.body
     if (!plan) {
       return res.status(400).json({ error: 'Missing FIRE plan data' })
     }
-    const result = await orchestrate('fire-planner', { ...data, plan })
+    // Sanitize plan figures before they reach the AI prompt.
+    const safePlan = {
+      ...plan,
+      fireNumber: Math.round(Math.abs(Number(plan.fireNumber) || 0)),
+      requiredSIP: Math.round(Math.abs(Number(plan.requiredSIP) || 0)),
+      yearsToRetire: Math.min(Math.max(Number(plan.yearsToRetire) || 1, 1), 60),
+      gap: Math.round(Number(plan.gap) || 0),
+    }
+    const result = await orchestrate('fire-planner', { ...data, plan: safePlan })
     res.json(result)
   } catch (err) {
-    console.error('FIRE Planner error:', err)
+    console.error('FIRE Planner error:', err.message)
     res.status(500).json({ error: 'Planning failed', insights: '' })
   }
 })
 
-// Configure Nodemailer with more explicit settings
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true, // Use SSL
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  debug: true, // Show debug output
-  logger: true // Log information in console
-})
-
-// Verify Transporter on Start
-transporter.verify((error, success) => {
-  if (error) {
-    console.error('❌ Nodemailer Setup Error!')
-    console.error('Error Code:', error.code)
-    console.error('Full Error:', error.message)
-    console.log('💡 TIP: Double check your EMAIL_USER and EMAIL_PASS (16-character App Password).')
-  } else {
-    console.log('✅ Nodemailer is READY and CONNECTED to your Gmail!')
-    console.log('📬 Ready to deliver emails to:', process.env.CONTACT_EMAIL)
-  }
-})
-
 // Contact Form Submission
-app.post('/api/contact', async (req, res) => {
-  console.log('📩 Incoming contact request from:', req.body.email)
+app.post('/api/contact', contactLimiter, async (req, res) => {
   try {
     const { name, email, subject, message } = req.body
 
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      throw new Error('Missing EMAIL_USER or EMAIL_PASS in .env')
+      throw new Error('Email credentials not configured')
     }
 
-    // Send Real Email
     const mailOptions = {
       from: `"${name}" <${process.env.EMAIL_USER}>`,
       to: process.env.CONTACT_EMAIL || process.env.EMAIL_USER,
@@ -115,22 +123,16 @@ app.post('/api/contact', async (req, res) => {
           <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
           <p style="white-space: pre-wrap;">${message}</p>
         </div>
-      `
+      `,
     }
 
     const info = await transporter.sendMail(mailOptions)
-    console.log('📧 Message sent successfully! MessageID:', info.messageId)
-    res.json({ success: true, message: 'Message delivered to your email' })
-
+    console.log('📧 Message sent. ID:', info.messageId)
+    res.json({ success: true, message: 'Message delivered' })
   } catch (err) {
-    console.error('❌ Nodemailer Error During Send:', err.message)
-    res.status(500).json({ error: 'Failed to deliver email. Check server console for errors.' })
+    console.error('Contact form error:', err.message)
+    res.status(500).json({ error: 'Failed to deliver email.' })
   }
-})
-
-// Audit Log
-app.get('/api/audit-log', (req, res) => {
-  res.json({ log: getAuditLog() })
 })
 
 // Health Check
@@ -138,10 +140,46 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
-// Export for Vercel
-export default app;
+// ── Helpers ──
 
-// Start server (only if not running as a serverless function)
+function sanitizeTaxRegime(regime) {
+  if (!regime || typeof regime !== 'object') return {}
+  return {
+    total: Math.round(Math.abs(Number(regime.total) || 0)),
+    tax: Math.round(Math.abs(Number(regime.tax) || 0)),
+    cess: Math.round(Math.abs(Number(regime.cess) || 0)),
+    taxableIncome: Math.round(Math.abs(Number(regime.taxableIncome) || 0)),
+    deductions: Math.round(Math.abs(Number(regime.deductions) || 0)),
+  }
+}
+
+// ── Nodemailer ──
+// Remove debug/logger in production to prevent credential leakage in logs.
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  ...(process.env.NODE_ENV !== 'production' && { debug: true, logger: true }),
+})
+
+transporter.verify((error) => {
+  if (error) {
+    // Log the error code only — never the full message, which can include credentials.
+    console.error('❌ Nodemailer error. Code:', error.code)
+    console.log('💡 Check EMAIL_USER and EMAIL_PASS in your .env file.')
+  } else {
+    console.log('✅ Nodemailer ready.')
+  }
+})
+
+// ── Export / Start ──
+
+export default app
+
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
     console.log(`

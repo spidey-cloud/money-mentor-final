@@ -1,56 +1,67 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import { readJSON, writeJSON } from '../lib/storage'
 
 const AuthContext = createContext()
+
+// SHA-256 via the Web Crypto API — no library needed.
+async function hashPassword(password) {
+  const buf = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(password)
+  )
+  return Array.from(new Uint8Array(buf))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('')
+}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('mm_user')
-    if (savedUser) {
-      setUser(JSON.parse(savedUser))
-    }
+    const savedUser = readJSON('mm_user', null)
+    if (savedUser) setUser(savedUser)
     setLoading(false)
   }, [])
 
-  const login = (email, password) => {
-    // Simulate login - in production, this would call your backend
-    const storedUsers = JSON.parse(localStorage.getItem('mm_users') || '[]')
-    const foundUser = storedUsers.find(u => u.email === email && u.password === password)
-
+  const login = async (email, password) => {
+    const storedUsers = readJSON('mm_users', [])
+    const hash = await hashPassword(password)
+    const foundUser = storedUsers.find(
+      u => u.email === email && u.passwordHash === hash
+    )
     if (foundUser) {
-      const { password, ...userWithoutPassword } = foundUser
-      setUser(userWithoutPassword)
-      localStorage.setItem('mm_user', JSON.stringify(userWithoutPassword))
+      const { passwordHash, ...safeUser } = foundUser
+      setUser(safeUser)
+      writeJSON('mm_user', safeUser)
       return { success: true }
     }
     return { success: false, error: 'Invalid email or password' }
   }
 
-  const signup = (userData) => {
-    // Simulate signup - in production, this would call your backend
-    const storedUsers = JSON.parse(localStorage.getItem('mm_users') || '[]')
-
-    // Check if user already exists
+  const signup = async (userData) => {
+    const storedUsers = readJSON('mm_users', [])
     if (storedUsers.find(u => u.email === userData.email)) {
       return { success: false, error: 'Email already registered' }
     }
 
+    const passwordHash = await hashPassword(userData.password)
     const newUser = {
       id: Date.now().toString(),
-      ...userData,
+      name: userData.name,
+      email: userData.email,
+      phone: userData.phone,
+      passwordHash,
       emailVerified: false,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     }
 
     storedUsers.push(newUser)
-    localStorage.setItem('mm_users', JSON.stringify(storedUsers))
+    writeJSON('mm_users', storedUsers)
 
-    const { password, ...userWithoutPassword } = newUser
-    setUser(userWithoutPassword)
-    localStorage.setItem('mm_user', JSON.stringify(userWithoutPassword))
-
+    const { passwordHash: _, ...safeUser } = newUser
+    setUser(safeUser)
+    writeJSON('mm_user', safeUser)
     return { success: true }
   }
 
@@ -62,27 +73,23 @@ export function AuthProvider({ children }) {
   const updateProfile = (updates) => {
     const updatedUser = { ...user, ...updates }
     setUser(updatedUser)
-    localStorage.setItem('mm_user', JSON.stringify(updatedUser))
+    writeJSON('mm_user', updatedUser)
 
-    // Update in users list
-    const storedUsers = JSON.parse(localStorage.getItem('mm_users') || '[]')
-    const updatedUsers = storedUsers.map(u =>
-      u.id === user.id ? { ...u, ...updates } : u
+    const storedUsers = readJSON('mm_users', [])
+    writeJSON(
+      'mm_users',
+      storedUsers.map(u => (u.id === user.id ? { ...u, ...updates } : u))
     )
-    localStorage.setItem('mm_users', JSON.stringify(updatedUsers))
   }
 
-  const sendVerificationEmail = () => {
-    // Simulate sending verification email
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ success: true })
-      }, 1000)
-    })
-  }
+  const sendVerificationEmail = () =>
+    new Promise(resolve => setTimeout(() => resolve({ success: true }), 1000))
 
   const verifyEmail = (code) => {
-    // Simulate email verification
+    // Demo only: code is accepted in dev; production must use a real server flow.
+    if (!import.meta.env.DEV) {
+      return { success: false, error: 'Email verification is not available in this build.' }
+    }
     if (code === '123456') {
       updateProfile({ emailVerified: true })
       return { success: true }
@@ -100,7 +107,7 @@ export function AuthProvider({ children }) {
       updateProfile,
       sendVerificationEmail,
       verifyEmail,
-      isAuthenticated: !!user
+      isAuthenticated: !!user,
     }}>
       {children}
     </AuthContext.Provider>

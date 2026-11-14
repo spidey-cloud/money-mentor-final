@@ -166,36 +166,33 @@ function getRecommendations(scores) {
 }
 
 export default function HealthScore() {
-  const [step, setStep] = useState(0) // 0 = intro, 1-6 = questions, 7 = loading, 8 = results
+  // phase is a named string — no mixed number/string type confusion.
+  const [phase, setPhase] = useState('intro') // 'intro' | 'questions' | 'loading' | 'results'
+  const [questionStep, setQuestionStep] = useState(1) // 1..totalSteps
   const [answers, setAnswers] = useState({})
   const [scores, setScores] = useState(null)
   const [aiInsights, setAiInsights] = useState('')
-  const [loading, setLoading] = useState(false)
   const formRef = useRef(null)
   const { useCredit } = useCredits()
   const { triggerReview } = useReview()
 
   const totalSteps = questions.length
-  const currentCategory = step > 0 && step <= totalSteps ? questions[step - 1] : null
+  const currentCategory = questions[questionStep - 1]
 
   const handleAnswer = (id, value) => {
     setAnswers(prev => ({ ...prev, [id]: value }))
   }
 
   const handleNext = () => {
-    if (step < totalSteps) {
-      setStep(step + 1)
+    if (questionStep < totalSteps) {
+      setQuestionStep(q => q + 1)
     } else {
-      // Check credits before processing
-      if (!useCredit()) return;
+      if (!useCredit()) return
 
-      // Calculate scores
-      setStep(totalSteps + 1) // loading
-      setLoading(true)
+      setPhase('loading')
       const computed = calculateScores(answers)
       setScores(computed)
 
-      // Try to get AI insights
       const apiUrl = import.meta.env.VITE_API_BASE_URL || ''
       fetch(`${apiUrl}/api/health-score`, {
         method: 'POST',
@@ -205,24 +202,30 @@ export default function HealthScore() {
         .then(res => res.json())
         .then(data => {
           setAiInsights(data.insights || '')
-          setStep(totalSteps + 2)
-          setLoading(false)
+          setPhase('results')
           triggerReview('Health Score')
         })
         .catch(() => {
-          setStep(totalSteps + 2)
-          setLoading(false)
+          setPhase('results')
           triggerReview('Health Score')
         })
     }
   }
 
   const handleBack = () => {
-    if (step > 1) setStep(step - 1)
+    if (questionStep > 1) setQuestionStep(q => q - 1)
+  }
+
+  const handleRetake = () => {
+    setPhase('intro')
+    setQuestionStep(1)
+    setScores(null)
+    setAnswers({})
+    setAiInsights('')
   }
 
   // Intro screen
-  if (step === 0) {
+  if (phase === 'intro') {
     return (
       <div className="hs-page animate-fade-in-up">
         <div className="hs-intro glass-card">
@@ -242,7 +245,7 @@ export default function HealthScore() {
               </div>
             ))}
           </div>
-          <button className="btn btn-primary btn-lg" onClick={() => setStep(1)}>
+          <button className="btn btn-primary btn-lg" onClick={() => setPhase('questions')}>
             Start Assessment <ArrowRight size={18} />
           </button>
           <p className="hs-time-note">⏱️ Takes about 5 minutes</p>
@@ -252,7 +255,7 @@ export default function HealthScore() {
   }
 
   // Loading screen
-  if (step === totalSteps + 1 && loading) {
+  if (phase === 'loading') {
     return (
       <div className="hs-page">
         <div className="hs-loading animate-fade-in">
@@ -279,7 +282,7 @@ export default function HealthScore() {
   }
 
   // Results screen
-  if (step === totalSteps + 2 && scores) {
+  if (phase === 'results' && scores) {
     const scoreValues = Object.values(scores)
     const avg = Math.round(scoreValues.reduce((a, b) => a + b, 0) / scoreValues.length)
     const grade = getOverallGrade(avg)
@@ -406,27 +409,27 @@ export default function HealthScore() {
           </div>
         </div>
 
-        <button className="btn btn-secondary mt-3" onClick={() => { setStep(0); setScores(null); setAnswers({}) }}>
+        <button className="btn btn-secondary mt-3" onClick={handleRetake}>
           Retake Assessment
         </button>
       </div>
     )
   }
 
-  // Question form
+  // Question form (phase === 'questions')
   return (
     <div className="hs-page animate-fade-in">
       <div className="hs-progress-section">
         <div className="hs-progress-info">
-          <span>Step {step} of {totalSteps}</span>
+          <span>Step {questionStep} of {totalSteps}</span>
           <span>{currentCategory?.category}</span>
         </div>
         <div className="progress-bar">
-          <div className="progress-bar-fill" style={{ width: `${(step / totalSteps) * 100}%` }}></div>
+          <div className="progress-bar-fill" style={{ width: `${(questionStep / totalSteps) * 100}%` }}></div>
         </div>
       </div>
 
-      <div className="hs-form-card glass-card animate-slide-in" key={step} ref={formRef}>
+      <div className="hs-form-card glass-card animate-slide-in" key={questionStep} ref={formRef}>
         <div className="hs-cat-header">
           <span className="hs-cat-emoji">{currentCategory?.icon}</span>
           <h2>{currentCategory?.category}</h2>
@@ -463,11 +466,11 @@ export default function HealthScore() {
         </div>
 
         <div className="hs-form-actions">
-          <button className="btn btn-secondary" onClick={handleBack} disabled={step <= 1}>
+          <button className="btn btn-secondary" onClick={handleBack} disabled={questionStep <= 1}>
             <ArrowLeft size={16} /> Back
           </button>
           <button className="btn btn-primary" onClick={handleNext}>
-            {step === totalSteps ? (
+            {questionStep === totalSteps ? (
               <>Calculate Score <CheckCircle2 size={16} /></>
             ) : (
               <>Next <ArrowRight size={16} /></>

@@ -1,7 +1,14 @@
-.credit-badge {
+.top-nav-actions {
   position: fixed;
   top: 1rem;
   right: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  z-index: 105;
+}
+
+.credit-badge {
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -10,7 +17,6 @@
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   box-shadow: var(--card-shadow);
-  z-index: 105;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transition: all var(--transition-fast);

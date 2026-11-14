@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { Bar } from 'react-chartjs-2'
 import { useCredits } from '../context/CreditContext'
 import { useReview } from '../context/ReviewContext'
+import { formatINR } from '../lib/format'
 import './TaxWizard.css'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
@@ -20,15 +21,40 @@ const deductionsList = [
   { id: '80d_self', label: 'Section 80D — Health Insurance (Self)', max: 25000 },
   { id: '80d_parents', label: 'Section 80D — Health Insurance (Parents)', max: 50000 },
   { id: 'nps', label: 'Section 80CCD(1B) — NPS', max: 50000 },
-  { id: 'hra', label: 'HRA Exemption', max: 0 },
   { id: 'home_loan', label: 'Section 24 — Home Loan Interest', max: 200000 },
   { id: 'education_loan', label: 'Section 80E — Education Loan Interest', max: 0 },
   { id: 'donation', label: 'Section 80G — Donations', max: 0 },
   { id: 'standard', label: 'Standard Deduction', max: 75000, locked: true },
+  // HRA is auto-calculated from Basic / HRA received / Rent paid above — no manual entry needed.
 ]
 
-function calculateOldRegimeTax(income, deductions) {
-  const totalDeductions = Object.values(deductions).reduce((a, b) => a + (Number(b) || 0), 0) + 75000 // std deduction
+const STANDARD_DEDUCTION = deductionsList.find(d => d.id === 'standard').max
+
+// Section 87A rebate limits (FY 2025-26)
+const OLD_REGIME_REBATE_LIMIT = 500_000
+const NEW_REGIME_REBATE_LIMIT = 1_200_000
+
+/**
+ * HRA exemption = minimum of three limits (Income Tax Act s.10(13A)):
+ *   1. Actual HRA received
+ *   2. 50% of basic (metro) or 40% of basic (non-metro)
+ *   3. Rent paid minus 10% of basic
+ */
+function calculateHRAExemption({ basic, hra_received, rent_paid, metro }) {
+  const b = Number(basic) || 0
+  const h = Number(hra_received) || 0
+  const r = Number(rent_paid) || 0
+  if (!h || !r || !b) return 0
+  const metroFactor = metro === 'Yes' ? 0.5 : 0.4
+  return Math.max(0, Math.min(h, metroFactor * b, r - 0.1 * b))
+}
+
+function calculateOldRegimeTax(income, deductions, salary) {
+  const hra = calculateHRAExemption(salary)
+  const totalDeductions =
+    Object.values(deductions).reduce((a, b) => a + (Number(b) || 0), 0) +
+    STANDARD_DEDUCTION +
+    hra
   const taxableIncome = Math.max(income - totalDeductions, 0)
 
   let tax = 0
@@ -37,15 +63,14 @@ function calculateOldRegimeTax(income, deductions) {
   if (taxableIncome > 250000) tax += Math.min(taxableIncome - 250000, 250000) * 0.05
 
   // Rebate u/s 87A
-  if (taxableIncome <= 500000) tax = 0
+  if (taxableIncome <= OLD_REGIME_REBATE_LIMIT) tax = 0
 
   const cess = tax * 0.04
   return { taxableIncome, tax, cess, total: tax + cess, deductions: totalDeductions }
 }
 
 function calculateNewRegimeTax(income) {
-  const stdDeduction = 75000
-  const taxableIncome = Math.max(income - stdDeduction, 0)
+  const taxableIncome = Math.max(income - STANDARD_DEDUCTION, 0)
 
   let tax = 0
   const slabs = [
@@ -66,11 +91,11 @@ function calculateNewRegimeTax(income) {
     remaining -= taxable
   }
 
-  // Rebate u/s 87A for new regime (income up to 12L)
-  if (taxableIncome <= 1200000) tax = 0
+  // Rebate u/s 87A for new regime (income up to ₹12L)
+  if (taxableIncome <= NEW_REGIME_REBATE_LIMIT) tax = 0
 
   const cess = tax * 0.04
-  return { taxableIncome, tax, cess, total: tax + cess, deductions: stdDeduction }
+  return { taxableIncome, tax, cess, total: tax + cess, deductions: STANDARD_DEDUCTION }
 }
 
 function findMissedDeductions(claimed) {
@@ -107,13 +132,13 @@ export default function TaxWizard() {
     setStep('loading')
     setLoading(true)
 
-    const oldRegime = calculateOldRegimeTax(grossIncome, deductions)
+    const oldRegime = calculateOldRegimeTax(grossIncome, deductions, salary)
     const newRegime = calculateNewRegimeTax(grossIncome)
     const savings = Math.abs(oldRegime.total - newRegime.total)
     const recommended = oldRegime.total <= newRegime.total ? 'Old Regime' : 'New Regime'
     const missed = findMissedDeductions(deductions)
 
-    const res = { oldRegime, newRegime, savings, recommended, missed, grossIncome }
+    const res = { oldRegime, newRegime, savings, recommended, missed, grossIncome, salary }
     setResults(res)
 
     // Try AI insights
@@ -136,8 +161,6 @@ export default function TaxWizard() {
         triggerReview('Tax Wizard')
       })
   }
-
-  const formatCurrency = (n) => '₹' + Math.round(n).toLocaleString('en-IN')
 
   if (step === 'loading') {
     return (
@@ -173,7 +196,7 @@ export default function TaxWizard() {
       maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: (ctx) => formatCurrency(ctx.raw) } }
+        tooltip: { callbacks: { label: (ctx) => formatINR(ctx.raw) } }
       },
       scales: {
         x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { weight: '600' } } },
@@ -185,7 +208,7 @@ export default function TaxWizard() {
       <div className="tw-page animate-fade-in-up">
         <div className="page-header">
           <h1>Tax Analysis Results</h1>
-          <p>Gross Income: {formatCurrency(grossIncome)}</p>
+          <p>Gross Income: {formatINR(grossIncome)}</p>
         </div>
 
         {/* Recommendation Banner */}
@@ -193,7 +216,7 @@ export default function TaxWizard() {
           <CheckCircle2 size={24} />
           <div>
             <h3>Recommended: {recommended}</h3>
-            <p>You save {formatCurrency(savings)} by choosing the {recommended.toLowerCase()}</p>
+            <p>You save {formatINR(savings)} by choosing the {recommended.toLowerCase()}</p>
           </div>
         </div>
 
@@ -201,12 +224,12 @@ export default function TaxWizard() {
         <div className="tw-comparison">
           <div className="tw-regime-card glass-card">
             <h3 className="tw-old-label">Old Regime</h3>
-            <div className="tw-tax-amount">{formatCurrency(oldRegime.total)}</div>
+            <div className="tw-tax-amount">{formatINR(oldRegime.total)}</div>
             <div className="tw-tax-detail">
-              <div><span>Taxable Income</span><span>{formatCurrency(oldRegime.taxableIncome)}</span></div>
-              <div><span>Tax</span><span>{formatCurrency(oldRegime.tax)}</span></div>
-              <div><span>Cess (4%)</span><span>{formatCurrency(oldRegime.cess)}</span></div>
-              <div><span>Deductions</span><span>{formatCurrency(oldRegime.deductions)}</span></div>
+              <div><span>Taxable Income</span><span>{formatINR(oldRegime.taxableIncome)}</span></div>
+              <div><span>Tax</span><span>{formatINR(oldRegime.tax)}</span></div>
+              <div><span>Cess (4%)</span><span>{formatINR(oldRegime.cess)}</span></div>
+              <div><span>Deductions</span><span>{formatINR(oldRegime.deductions)}</span></div>
             </div>
           </div>
 
@@ -214,12 +237,12 @@ export default function TaxWizard() {
 
           <div className="tw-regime-card glass-card">
             <h3 className="tw-new-label">New Regime</h3>
-            <div className="tw-tax-amount">{formatCurrency(newRegime.total)}</div>
+            <div className="tw-tax-amount">{formatINR(newRegime.total)}</div>
             <div className="tw-tax-detail">
-              <div><span>Taxable Income</span><span>{formatCurrency(newRegime.taxableIncome)}</span></div>
-              <div><span>Tax</span><span>{formatCurrency(newRegime.tax)}</span></div>
-              <div><span>Cess (4%)</span><span>{formatCurrency(newRegime.cess)}</span></div>
-              <div><span>Deductions</span><span>{formatCurrency(newRegime.deductions)}</span></div>
+              <div><span>Taxable Income</span><span>{formatINR(newRegime.taxableIncome)}</span></div>
+              <div><span>Tax</span><span>{formatINR(newRegime.tax)}</span></div>
+              <div><span>Cess (4%)</span><span>{formatINR(newRegime.cess)}</span></div>
+              <div><span>Deductions</span><span>{formatINR(newRegime.deductions)}</span></div>
             </div>
           </div>
         </div>
@@ -241,7 +264,7 @@ export default function TaxWizard() {
                 <div key={i} className="tw-missed-card glass-card">
                   <div className="tw-missed-header">
                     <span className="badge badge-warning">{m.section}</span>
-                    <span className="tw-missed-potential">Potential: {formatCurrency(m.potential)}</span>
+                    <span className="tw-missed-potential">Potential: {formatINR(m.potential)}</span>
                   </div>
                   <p>{m.tip}</p>
                 </div>
@@ -324,7 +347,7 @@ export default function TaxWizard() {
                   {d.max > 0 && <span className="tw-max-badge">Max: ₹{d.max.toLocaleString('en-IN')}</span>}
                 </label>
                 {d.locked ? (
-                  <input type="number" className="input-field" value={75000} disabled />
+                  <input type="number" className="input-field" value={STANDARD_DEDUCTION} disabled />
                 ) : (
                   <input type="number" className="input-field" placeholder="0"
                     value={deductions[d.id] || ''}

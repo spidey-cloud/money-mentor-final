@@ -1,13 +1,19 @@
 import { MessageSquare, Star, X } from 'lucide-react'
 import { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
 import { useReview } from '../context/ReviewContext'
 import './ReviewModal.css'
 
+// No preset list needed — user can type any Indian city
+
 export default function ReviewModal() {
   const { isModalOpen, setIsModalOpen, saveReview, lastAnalysisType } = useReview()
+  const { user } = useAuth()
   const [rating, setRating] = useState(0)
   const [hover, setHover] = useState(0)
   const [comment, setComment] = useState('')
+  const [city, setCity] = useState('')
+  const [name, setName] = useState('')
 
   if (!isModalOpen) return null
 
@@ -15,16 +21,26 @@ export default function ReviewModal() {
     e.preventDefault()
     if (rating === 0) return
 
+    const cityName = city.trim() || 'India'
+    const reviewerName = name.trim() || user?.name || user?.email?.split('@')[0] || 'MoneyMentor Investor'
+
     saveReview({
       rating,
       comment,
-      type: lastAnalysisType,
-      userName: 'Anonymous Mentor User' // Fixed for simplicity in this hackathon version
+      type: lastAnalysisType || 'Financial Assessment',
+      userName: reviewerName,
+      city: cityName,
+      country: 'IN',
+      // lat/lng resolved later in globe-reviews using the city lookup table
+      lat: null,
+      lng: null,
+      role: 'Verified Investor'
     })
 
     // Reset state
     setRating(0)
     setComment('')
+    setName('')
   }
 
   return (
@@ -39,7 +55,7 @@ export default function ReviewModal() {
         </div>
 
         <h2>Great insights?</h2>
-        <p>How would you rate your {lastAnalysisType} experience?</p>
+        <p>How would you rate your {lastAnalysisType || 'financial planning'} experience?</p>
 
         <form onSubmit={handleSubmit}>
           <div className="star-rating">
@@ -58,6 +74,49 @@ export default function ReviewModal() {
                 />
               </button>
             ))}
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px', textAlign: 'left' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                Your Name
+              </label>
+              <input
+                type="text"
+                placeholder={user?.name || "e.g. Vikram Sharma"}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  border: '1px solid var(--border-subtle)',
+                  background: 'var(--bg-surface)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.95rem'
+                }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                Your City
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Jaipur, Surat, Nagpur..."
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  border: '1px solid var(--border-subtle)',
+                  background: 'var(--bg-surface)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.95rem'
+                }}
+              />
+            </div>
           </div>
 
           <textarea

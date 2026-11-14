@@ -14,21 +14,25 @@ import { useState } from 'react'
 import { Doughnut, Line } from 'react-chartjs-2'
 import { useCredits } from '../context/CreditContext'
 import { useReview } from '../context/ReviewContext'
+import { formatCr, formatINR } from '../lib/format'
 import './FirePlanner.css'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend, ArcElement)
+
+// FIRE calculation constants
+const INFLATION_RATE = 0.06        // 6% long-term Indian inflation assumption
+const SAFE_WITHDRAWAL_MULTIPLE = 25 // 4% rule: 1/0.04 = 25x annual expenses
+const RETURN_RATES = { Conservative: 0.08, Moderate: 0.10, Aggressive: 0.12 }
 
 function calculateFirePlan(data) {
   const { age, retireAge, monthlyIncome, monthlyExpenses, currentSavings, riskProfile } = data
   const yearsToRetire = Math.max(retireAge - age, 1)
   const annualExpenses = monthlyExpenses * 12
-  const inflationRate = 0.06
-  const futureAnnualExpenses = annualExpenses * Math.pow(1 + inflationRate, yearsToRetire)
-  const fireNumber = futureAnnualExpenses * 25
+  const futureAnnualExpenses = annualExpenses * Math.pow(1 + INFLATION_RATE, yearsToRetire)
+  const fireNumber = futureAnnualExpenses * SAFE_WITHDRAWAL_MULTIPLE
   const monthlySavings = monthlyIncome - monthlyExpenses
 
-  const returnRates = { Conservative: 0.08, Moderate: 0.10, Aggressive: 0.12 }
-  const returnRate = returnRates[riskProfile] || 0.10
+  const returnRate = RETURN_RATES[riskProfile] ?? RETURN_RATES.Moderate
   const monthlyReturn = returnRate / 12
 
   // Future value of current savings
@@ -50,19 +54,17 @@ function calculateFirePlan(data) {
     corpus = corpus * (1 + returnRate) + requiredSIP * 12
   }
 
-  // Asset allocation
   const allocations = {
     Conservative: { equity: 30, debt: 50, gold: 10, cash: 10 },
-    Moderate: { equity: 50, debt: 30, gold: 10, cash: 10 },
-    Aggressive: { equity: 70, debt: 15, gold: 10, cash: 5 },
+    Moderate:     { equity: 50, debt: 30, gold: 10, cash: 10 },
+    Aggressive:   { equity: 70, debt: 15, gold: 10, cash:  5 },
   }
 
-  // SIP breakdown by goal
   const sipBreakdown = [
-    { name: 'Equity Mutual Funds', amount: Math.round(requiredSIP * (allocations[riskProfile]?.equity || 50) / 100), type: 'equity' },
-    { name: 'Debt Funds / PPF', amount: Math.round(requiredSIP * (allocations[riskProfile]?.debt || 30) / 100), type: 'debt' },
-    { name: 'Gold ETF / SGBs', amount: Math.round(requiredSIP * (allocations[riskProfile]?.gold || 10) / 100), type: 'gold' },
-    { name: 'Emergency / Liquid', amount: Math.round(requiredSIP * (allocations[riskProfile]?.cash || 10) / 100), type: 'cash' },
+    { name: 'Equity Mutual Funds', amount: Math.round(requiredSIP * (allocations[riskProfile]?.equity ?? 50) / 100), type: 'equity' },
+    { name: 'Debt Funds / PPF',    amount: Math.round(requiredSIP * (allocations[riskProfile]?.debt  ?? 30) / 100), type: 'debt' },
+    { name: 'Gold ETF / SGBs',     amount: Math.round(requiredSIP * (allocations[riskProfile]?.gold  ?? 10) / 100), type: 'gold' },
+    { name: 'Emergency / Liquid',  amount: Math.round(requiredSIP * (allocations[riskProfile]?.cash  ?? 10) / 100), type: 'cash' },
   ]
 
   // Milestones
@@ -90,7 +92,7 @@ function calculateFirePlan(data) {
     yearsToRetire,
     returnRate,
     projection,
-    allocation: allocations[riskProfile] || allocations.Moderate,
+    allocation: allocations[riskProfile] ?? allocations.Moderate,
     sipBreakdown,
     milestones,
     gap: Math.round(requiredSIP - monthlySavings),
@@ -150,13 +152,6 @@ export default function FirePlanner() {
       })
   }
 
-  const fmt = (n) => '₹' + Math.round(n).toLocaleString('en-IN')
-  const fmtCr = (n) => {
-    if (n >= 10000000) return '₹' + (n / 10000000).toFixed(2) + ' Cr'
-    if (n >= 100000) return '₹' + (n / 100000).toFixed(2) + ' L'
-    return fmt(n)
-  }
-
   if (step === 'loading') {
     return (
       <div className="fire-page">
@@ -198,11 +193,11 @@ export default function FirePlanner() {
       maintainAspectRatio: false,
       plugins: {
         legend: { labels: { color: '#94a3b8', font: { size: 12 } } },
-        tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + fmtCr(ctx.raw) } }
+        tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + formatCr(ctx.raw) } }
       },
       scales: {
         x: { grid: { display: false }, ticks: { color: '#64748b', maxTicksLimit: 10 } },
-        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', callback: (v) => fmtCr(v) } }
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', callback: (v) => formatCr(v) } }
       }
     }
 
@@ -234,12 +229,12 @@ export default function FirePlanner() {
         <div className="fire-metrics">
           <div className="fire-metric-card glass-card animate-scale-in">
             <Target size={24} className="fire-metric-icon fire-icon-rose" />
-            <div className="fire-metric-value">{fmtCr(fireNumber)}</div>
+            <div className="fire-metric-value">{formatCr(fireNumber)}</div>
             <div className="fire-metric-label">FIRE Number</div>
           </div>
           <div className="fire-metric-card glass-card animate-scale-in stagger-1">
             <Wallet size={24} className="fire-metric-icon fire-icon-blue" />
-            <div className="fire-metric-value">{fmt(requiredSIP)}</div>
+            <div className="fire-metric-value">{formatINR(requiredSIP)}</div>
             <div className="fire-metric-label">Required Monthly SIP</div>
           </div>
           <div className="fire-metric-card glass-card animate-scale-in stagger-2">
@@ -250,7 +245,7 @@ export default function FirePlanner() {
           <div className="fire-metric-card glass-card animate-scale-in stagger-3">
             <TrendingUp size={24} className="fire-metric-icon fire-icon-amber" />
             <div className="fire-metric-value" style={{ color: gap > 0 ? 'var(--accent-rose)' : 'var(--accent-emerald)' }}>
-              {gap > 0 ? `${fmt(gap)} short` : 'On track!'}
+              {gap > 0 ? `${formatINR(gap)} short` : 'On track!'}
             </div>
             <div className="fire-metric-label">Monthly Gap</div>
           </div>
@@ -281,7 +276,7 @@ export default function FirePlanner() {
                   <div className={`fire-sip-dot fire-dot-${s.type}`}></div>
                   <div className="fire-sip-info">
                     <span className="fire-sip-name">{s.name}</span>
-                    <span className="fire-sip-amount">{fmt(s.amount)}/mo</span>
+                    <span className="fire-sip-amount">{formatINR(s.amount)}/mo</span>
                   </div>
                 </div>
               ))}
@@ -298,7 +293,7 @@ export default function FirePlanner() {
                 <div className="fire-ms-dot"></div>
                 <div className="fire-ms-content glass-card">
                   <div className="fire-ms-label">{m.label}</div>
-                  <div className="fire-ms-detail">Age {m.age} • {fmtCr(m.amount)}</div>
+                  <div className="fire-ms-detail">Age {m.age} • {formatCr(m.amount)}</div>
                 </div>
               </div>
             ))}
@@ -376,3 +371,4 @@ export default function FirePlanner() {
     </div>
   )
 }
+

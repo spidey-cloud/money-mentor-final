@@ -1,7 +1,7 @@
-import { ArrowRight, Calculator, Flame, HeartPulse, IndianRupee, Quote, Shield, Sparkles, Star, TrendingUp, Users } from 'lucide-react'
+import { ArrowRight, Calculator, Flame, HeartPulse, IndianRupee, Shield, Sparkles, TrendingUp, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { MotionAccordion } from '../components/MotionAccordion'
-import { useReview } from '../context/ReviewContext'
+import { TestimonialGlobeReviews } from '../components/ui/testimonial-globe-reviews'
 import './Home.css'
 
 const faqItems = [
@@ -66,9 +66,6 @@ const stats = [
 ]
 
 export default function Home() {
-  const { getTopReview } = useReview()
-  const topReview = getTopReview()
-
   return (
     <div className="home-page">
       {/* Hero Section */}
@@ -168,32 +165,9 @@ export default function Home() {
         <MotionAccordion items={faqItems} />
       </section>
 
-      {/* Reviews Section */}
+      {/* Reviews Section with Interactive Globe */}
       <section className="reviews-section animate-fade-in-up stagger-6">
-        <h2 className="section-heading">What Our <span className="text-gradient">Users Say</span></h2>
-        {topReview ? (
-          <div className="review-display-card glass-card">
-            <Quote size={40} className="review-quote-icon" />
-            <div className="review-stars">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  size={20}
-                  fill={i < topReview.rating ? 'currentColor' : 'none'}
-                  strokeOpacity={i < topReview.rating ? 0 : 1}
-                  style={{ color: i < topReview.rating ? 'var(--accent-amber)' : 'var(--text-muted)' }}
-                />
-              ))}
-            </div>
-            <p className="review-text">"{topReview.comment}"</p>
-            <div className="review-author">
-              <span className="author-name">{topReview.userName}</span>
-              <span className="author-meta">Verified User • {topReview.type}</span>
-            </div>
-          </div>
-        ) : (
-          <p className="no-reviews-note">No reviews yet. Be the first to share your experience!</p>
-        )}
+        <TestimonialGlobeReviews autoplay={true} />
       </section>
     </div>
   )

@@ -1,45 +1,65 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
+import { readJSON, writeJSON } from '../lib/storage'
 
 const CreditContext = createContext()
 
+export const FREE_CREDITS = 5
+
 export function CreditProvider({ children }) {
-  const [credits, setCredits] = useState(5)
-  const [isSubscribed, setIsSubscribed] = useState(false)
+  const [credits, setCredits] = useState(() => {
+    const saved = readJSON('mm_remaining_credits', null)
+    return saved !== null ? parseInt(saved, 10) : FREE_CREDITS
+  })
+  const [isSubscribed, setIsSubscribed] = useState(
+    () => readJSON('mm_is_subscribed', false)
+  )
   const [showPaywall, setShowPaywall] = useState(false)
+  // subSuccess drives an in-app banner instead of alert()
+  const [subSuccess, setSubSuccess] = useState(false)
 
-  // Load from local storage on mount
+  // Ref prevents double-spend when user clicks twice before state settles
+  const spending = useRef(false)
+
   useEffect(() => {
-    const savedCredits = localStorage.getItem('mm_remaining_credits')
-    const savedSub = localStorage.getItem('mm_is_subscribed')
-
-    if (savedCredits !== null) setCredits(parseInt(savedCredits, 10))
-    if (savedSub === 'true') setIsSubscribed(true)
-  }, [])
-
-  // Save to local storage when credits change
-  useEffect(() => {
-    localStorage.setItem('mm_remaining_credits', credits.toString())
-    localStorage.setItem('mm_is_subscribed', isSubscribed.toString())
+    writeJSON('mm_remaining_credits', credits)
+    writeJSON('mm_is_subscribed', isSubscribed)
   }, [credits, isSubscribed])
 
   const useCredit = () => {
-    if (isSubscribed) return true // Unlimited
+    if (spending.current) return false
+    if (isSubscribed) return true
     if (credits > 0) {
-      setCredits(prev => prev - 1)
+      spending.current = true
+      setCredits(prev => {
+        spending.current = false
+        return prev - 1
+      })
       return true
     }
     setShowPaywall(true)
     return false
   }
 
+  const openPaywall = () => setShowPaywall(true)
+
   const simulateSubscription = () => {
     setIsSubscribed(true)
     setShowPaywall(false)
-    alert("Payment successful! You are now a Premium Member. 🚀")
+    setSubSuccess(true)
+    setTimeout(() => setSubSuccess(false), 4000)
   }
 
   return (
-    <CreditContext.Provider value={{ credits, isSubscribed, showPaywall, setShowPaywall, useCredit, simulateSubscription }}>
+    <CreditContext.Provider value={{
+      credits,
+      isSubscribed,
+      showPaywall,
+      openPaywall,
+      setShowPaywall,
+      useCredit,
+      simulateSubscription,
+      subSuccess,
+    }}>
       {children}
     </CreditContext.Provider>
   )
